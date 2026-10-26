@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -62,7 +63,8 @@ public class AuditCommandBehavior<TRequest, TResponse>(IAuditSink auditSink) : I
     {
         foreach (var property in typeInfo.Properties)
         {
-            if (property.AttributeProvider?.IsDefined(typeof(AuditTrailIgnoreAttribute), inherit: true) == true)
+            // Attribute.IsDefined walks overridden properties; ICustomAttributeProvider.IsDefined does not.
+            if (property.AttributeProvider is MemberInfo member && Attribute.IsDefined(member, typeof(AuditTrailIgnoreAttribute), inherit: true))
             {
                 property.ShouldSerialize = static (_, _) => false;
             }
