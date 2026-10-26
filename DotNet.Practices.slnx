@@ -1,4 +1,21 @@
 <Solution>
+  <Folder Name="/.claude/">
+    <Folder Name="/.claude/agents/">
+      <File Path=".claude/agents/concept-explainer.md" />
+      <File Path=".claude/agents/dotnet-reviewer.md" />
+      <File Path=".claude/agents/test-writer.md" />
+    </Folder>
+    <Folder Name="/.claude/rules/">
+      <File Path=".claude/rules/comments.md" />
+      <File Path=".claude/rules/dotnet-standards.md" />
+      <File Path=".claude/rules/naming.md" />
+    </Folder>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="CLAUDE.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Project Path="src/DotNet.Practices.Abstractions/DotNet.Practices.Abstractions.csproj" Id="271204a2-8820-41f2-b71e-1b65556e9872" />
   <Project Path="tests/DotNet.Practices.Abstractions.Tests/DotNet.Practices.Abstractions.Tests.csproj" Id="6fd2dd41-22df-4c19-95bd-aa9ecd8b9c9b" />
 </Solution>
