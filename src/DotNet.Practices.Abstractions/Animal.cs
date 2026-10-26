@@ -1,6 +1,8 @@
+using DotNet.Practices.Abstractions.Interfaces;
+
 namespace DotNet.Practices.Abstractions;
 
-public abstract class Animal
+public abstract class Animal : IAnimal
 {
-    public abstract string Greet();
+    public virtual string Greet() => "Hello";
 }
