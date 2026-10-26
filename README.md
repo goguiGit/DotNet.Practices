@@ -30,7 +30,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Category | Pattern | Example | Status |
 |---|---|---|---|
 | Creational | Factory Method | [`Creational/FactoryMethod/`](src/DotNet.Practices.Abstractions/Creational/FactoryMethod/README.md) | done |
-| Creational | Abstract Factory | | pending |
+| Creational | Abstract Factory | [`Creational/AbstractFactory/`](src/DotNet.Practices.Abstractions/Creational/AbstractFactory/README.md) | done |
 | Creational | Builder | | pending |
 | Creational | Prototype | | pending |
 | Creational | Singleton | | pending |

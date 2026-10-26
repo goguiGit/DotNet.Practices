@@ -1,11 +1,13 @@
 # Patrones creacionales
 
+Los cinco ejemplos comparten un dominio, **logística** (transportes, embalajes, envíos), para que se vea cómo un patrón evoluciona en otro con los mismos tipos.
+
 Todos resuelven la misma pregunta: **¿quién hace el `new` y cómo evitamos que el código cliente dependa de clases concretas?** Se diferencian en *qué* problema del `new` atacan.
 
 | Patrón | Problema que ataca | Señal de que lo necesitas | Estado |
 |---|---|---|---|
 | [Factory Method](FactoryMethod/README.md) | Una clase base tiene lógica pero no sabe qué subtipo crear | Un `switch` sobre un tipo dentro de una jerarquía que ya existe | hecho |
-| Abstract Factory | Hay que crear **familias** de objetos que deben ser compatibles entre sí | Pasas varias fábricas a la vez y hay combinaciones inválidas | pendiente |
+| [Abstract Factory](AbstractFactory/README.md) | Hay que crear **familias** de objetos que deben ser compatibles entre sí | Pasas varias fábricas a la vez y hay combinaciones inválidas | hecho |
 | Builder | El objeto tiene muchos parámetros opcionales o se construye por pasos | Constructores con 6+ parámetros o varios constructores "telescópicos" | pendiente |
 | Prototype | Crear desde cero es caro o el tipo concreto no se conoce; clonar es más simple | Copias de objetos configurados, con `with` en records como caso trivial | pendiente |
 | Singleton | Debe existir una sola instancia con acceso global | Casi nunca: en .NET lo resuelve el contenedor DI con `AddSingleton` | pendiente |
