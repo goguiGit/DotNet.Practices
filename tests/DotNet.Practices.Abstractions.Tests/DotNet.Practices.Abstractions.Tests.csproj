@@ -16,4 +16,8 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DotNet.Practices.Abstractions\DotNet.Practices.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>
