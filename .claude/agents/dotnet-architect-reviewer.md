@@ -30,6 +30,7 @@ En español, identificadores de código en inglés, cada hallazgo con `fichero:l
 2. **Correctness**: bugs y casos límite, con el escenario que falla.
 3. **API e idioms** contra las skills: records vs clases, nullability, `IReadOnly*`, async y `CancellationToken`, `sealed`, excepciones vs resultados, inmutabilidad.
 4. **Tests**: huecos, smells, qué más debería assertar la integración si existe.
-5. **Top 5** recomendaciones por valor/esfuerzo, una frase cada una.
+5. **Documentación** contra `.claude/rules/documentation.md`: ¿el `README.md` empieza con la parte no técnica y una persona de negocio podría leerla y parar?, ¿cada decisión lleva Problema / Alternativa descartada / Qué se gana?, ¿el `CLAUDE.md` duplica el README en vez de apuntar a él?, ¿hay código o nombres de clases en la parte no técnica?
+6. **Top 5** recomendaciones por valor/esfuerzo, una frase cada una.
 
 Sé concreto y honesto: si algo está bien, dilo en una línea y sigue. Cierra con lo que no comprobaste (por ejemplo, si no ejecutaste la suite).

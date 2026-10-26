@@ -4,6 +4,28 @@ Educational repository: small, test-driven examples of design patterns and conve
 
 Target: .NET 10, C# latest, NUnit. Nothing here is a library to depend on; copy what you need.
 
+## What this is, in plain terms
+
+A software team learns by building small, well-explained examples. This repository is that notebook for .NET: each folder takes one recurring problem from real services (how to create objects without knowing their type, how to notify a company through the channels it chose, how to translate texts with a language model, how to fill in the properties of a corporate account from an HR record) and shows one careful way to solve it, with tests that prove it works and a write-up that explains **why** it was done that way and what was rejected.
+
+Who it is for and what they get:
+
+| Reader | What to read | What they get |
+|---|---|---|
+| Someone from business, HR or support | The first section of each project README, titled "Qué hace, en términos de negocio" | What the piece does, who feeds it and what comes out, with a concrete example and a flow diagram; no code |
+| A developer joining a team that uses these ideas | The rest of each README, then the code and its tests | The structure, the trade-offs, when to use it and when not |
+| An AI coding assistant | The `CLAUDE.md` files | The decisions already taken, so it does not reopen them |
+
+```mermaid
+flowchart LR
+    P[A recurring problem<br/>from real services] --> E[Small example<br/>with tests]
+    E --> W[Write-up: what, for whom,<br/>why, what was rejected]
+    W --> B[Business reader stops here]
+    W --> D[Developer continues<br/>to structure and code]
+```
+
+Nothing here is a library to install. Copy what you need, together with its reasons.
+
 ## Layout
 
 ```

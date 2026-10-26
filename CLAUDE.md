@@ -12,7 +12,7 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 - Clases, métodos y nombres de test en inglés. Comentarios en inglés y solo cuando sean imprescindibles: un comentario es un code smell por defecto (ver `.claude/rules/comments.md`).
 - Documentación para humanos (`README.md` de cada patrón) en español. Los identificadores de código citados se mantienen en inglés.
 - Toda decisión documentada (README o CLAUDE.md) lleva el **porqué**: el problema que la motivó, la alternativa descartada y qué se gana. Una decisión sin porqué no se da por documentada.
-- Todo `README.md` tiene **dos documentaciones**, en este orden: primero la no técnica, bajo el título "Qué hace, en términos de negocio" (quién interviene, qué entra y qué sale, un ejemplo concreto y un diagrama de flujo funcional, sin código ni nombres de clases), y después la técnica. Una persona sin perfil técnico debe poder leer la primera parte y parar ahí.
+- Todo `README.md` tiene **dos documentaciones**: primero la no técnica ("Qué hace, en términos de negocio", para gente de negocio, RRHH o soporte) y después la técnica. Detalle y prueba de fuego en `.claude/rules/documentation.md`.
 - Nullable habilitado en todo el repo.
 - CRLF en todos los ficheros.
 

@@ -8,6 +8,7 @@
     </Folder>
     <Folder Name="/.claude/rules/">
       <File Path=".claude/rules/comments.md" />
+      <File Path=".claude/rules/documentation.md" />
       <File Path=".claude/rules/dotnet-standards.md" />
       <File Path=".claude/rules/naming.md" />
     </Folder>

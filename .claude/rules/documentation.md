@@ -1,0 +1,25 @@
+# Documentación
+
+Hay dos lectores y cada uno tiene su documento. No se mezclan y no se omite ninguno.
+
+## Para personas no técnicas: la primera parte de cada `README.md`
+
+- Todo `README.md` (raíz, proyecto, categoría, patrón) empieza con la sección **"Qué hace, en términos de negocio"**, antes de cualquier detalle técnico.
+- Contenido obligatorio: quién interviene (roles, no clases), qué datos entran y de dónde, qué sale y para qué sirve, un ejemplo concreto con nombres reales del dominio, y un diagrama Mermaid de **flujo funcional** (actores y pasos, nunca clases ni métodos).
+- Prohibido en esa parte: nombres de clases, métodos, paquetes, código, siglas sin explicar. Si hace falta nombrar una pieza, se nombra por lo que hace ("el lector de reglas"), no por cómo se llama.
+- Prueba de fuego: alguien de negocio, RRHH o soporte debe poder leer esa parte, entender qué resuelve el proyecto y parar ahí.
+
+## Para técnicos: el resto del `README.md`
+
+- Estructura, diagramas de clases o secuencia, tabla de roles, cuándo usarlo y cuándo no, tests y cómo ejecutarlos.
+- Las decisiones de diseño siguen siempre el esquema **Problema / Alternativa descartada / Qué se gana**. Una decisión sin esos tres puntos no se da por documentada.
+
+## Para el agente: `CLAUDE.md` de cada carpeta
+
+- Solo decisiones, trampas y convenciones que no se deducen del código, en formato corto. Apunta al `README.md` para la explicación; no la duplica.
+
+## Reglas comunes
+
+- Español para la documentación; identificadores de código en inglés. El `README.md` raíz es la excepción histórica y está en inglés, con las mismas dos partes.
+- Mermaid para todos los diagramas. Sin imágenes externas.
+- Cuando cambia el código, se actualizan README y CLAUDE.md en el mismo commit o en un `docs:` inmediatamente después.
