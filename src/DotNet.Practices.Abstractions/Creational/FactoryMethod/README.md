@@ -4,6 +4,23 @@
 
 Dominio tomado de [refactoring.guru](https://refactoring.guru/es/design-patterns/factory-method) para poder leer ambos en paralelo: una empresa de logística planifica entregas sin importarle si las hace un camión o un barco.
 
+## Qué hace, en términos de negocio
+
+Una empresa de logística recibe pedidos y los entrega. El equipo que **planifica** la entrega (recoger, embalar, avisar al cliente, programar) trabaja igual sea cual sea el medio: lo único que cambia es si al final va un camión o un barco. Si cada planificador tuviera que saber de camiones y barcos, cada vehículo nuevo obligaría a reescribir toda la planificación.
+
+Factory Method separa las dos cosas: la planificación se escribe una sola vez contra "un transporte", y cada división (terrestre, marítima) decide cuál es su transporte concreto. Abrir una división fluvial es añadir una división y una barcaza; nadie toca la planificación.
+
+```mermaid
+flowchart LR
+    P[Pedido] --> D{División}
+    D -- terrestre --> T[Camión]
+    D -- marítima --> S[Barco]
+    T --> E[Entrega planificada<br/>con el mismo proceso]
+    S --> E
+```
+
+Quién gana: quien mantiene el proceso de entrega, que deja de depender de la flota; y quien amplía la flota, que no necesita entender el proceso.
+
 ## Estructura
 
 ```mermaid

@@ -2,6 +2,21 @@
 
 Los cinco ejemplos comparten un dominio, **logística** (transportes, embalajes, envíos), para que se vea cómo un patrón evoluciona en otro con los mismos tipos.
 
+## Qué hace, en términos de negocio
+
+Los patrones creacionales responden a una pregunta de organización, no de código: **¿quién decide cómo se construye una cosa, y cuánto tiene que saber de ella quien la usa?** En una empresa de logística: quien planifica una entrega no debería saber fabricar camiones; quien pide un envío no debería poder combinar un contenedor con un camión; quien configura un envío con doce opciones no debería rellenar doce casillas cada vez; y si ya existe un envío modelo para una ruta semanal, lo natural es copiarlo, no rehacerlo.
+
+Cada patrón de esta carpeta es una respuesta distinta a esa pregunta, con el mismo dominio para que se vea cuándo encaja cada una:
+
+```mermaid
+flowchart TD
+    Q[¿Quién construye y<br/>cuánto hay que saber?] --> FM[Una división decide el vehículo<br/>→ Factory Method]
+    Q --> AF[Una vía decide vehículo y embalaje a la vez<br/>→ Abstract Factory]
+    Q --> BU[Un envío se arma paso a paso<br/>→ Builder]
+    Q --> PR[Se copia un envío modelo<br/>→ Prototype]
+    Q --> SI[Hay un único centro de despacho<br/>→ Singleton]
+```
+
 Todos resuelven la misma pregunta: **¿quién hace el `new` y cómo evitamos que el código cliente dependa de clases concretas?** Se diferencian en *qué* problema del `new` atacan.
 
 | Patrón | Problema que ataca | Señal de que lo necesitas | Estado |

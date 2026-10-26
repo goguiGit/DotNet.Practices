@@ -4,6 +4,24 @@
 
 Mismo dominio que el resto de creacionales: logística. Cada vía de transporte es una familia: por carretera se envía en `Truck` con `Pallet`; por mar, en `Ship` con `Container`. Un contenedor marítimo en un camión es la combinación inválida que la fábrica impide. En [refactoring.guru](https://refactoring.guru/es/design-patterns/abstract-factory) el mismo patrón se cuenta con sillas y sofás de distintos estilos.
 
+## Qué hace, en términos de negocio
+
+La misma empresa de logística, un paso más allá. Enviar algo no es solo elegir vehículo: por carretera se carga en **camión** sobre **palés**; por mar, en **barco** dentro de **contenedores**. Camión y contenedor no combinan. Si cada pedido eligiera vehículo y embalaje por separado, antes o después alguien pediría un contenedor para un camión.
+
+Abstract Factory agrupa lo que debe ir junto: se elige **una vía** (carretera o mar) y de ahí salen, a la vez, el vehículo y el embalaje que casan entre sí. El planificador pide "transporte" y "embalaje" a la vía elegida y no puede equivocarse, porque la combinación inválida no se puede ni pedir.
+
+```mermaid
+flowchart LR
+    V{Vía elegida} -- carretera --> R[Camión + Palés]
+    V -- mar --> M[Barco + Contenedores]
+    R --> E[Envío planificado<br/>con piezas compatibles]
+    M --> E
+    X[Camión + Contenedores]:::bad -.-> |imposible de pedir| E
+    classDef bad stroke-dasharray: 5 5,color:#999,stroke:#999
+```
+
+Quién gana: quien opera, porque desaparecen las combinaciones imposibles; y quien añade una vía nueva (ferrocarril: vagón + plataforma), porque la añade entera sin tocar lo demás.
+
 ## Estructura
 
 ```mermaid
