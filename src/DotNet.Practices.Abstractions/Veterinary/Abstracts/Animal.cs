@@ -1,6 +1,6 @@
 using DotNet.Practices.Abstractions.Veterinary.Interfaces;
 
-namespace DotNet.Practices.Abstractions.Veterinary.Animals;
+namespace DotNet.Practices.Abstractions.Veterinary.Abstracts;
 
 public abstract class Animal : IAnimal
 {

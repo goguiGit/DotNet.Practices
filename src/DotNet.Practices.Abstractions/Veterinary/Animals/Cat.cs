@@ -1,3 +1,4 @@
+using DotNet.Practices.Abstractions.Veterinary.Abstracts;
 using DotNet.Practices.Abstractions.Veterinary.Interfaces;
 
 namespace DotNet.Practices.Abstractions.Veterinary.Animals;

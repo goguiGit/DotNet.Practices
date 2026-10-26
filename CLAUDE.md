@@ -4,12 +4,13 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 
 ## Estructura
 - `src/` librerías y el proyecto `DotNet.Practices.Benchmarks` (BenchmarkDotNet, ejecutar en Release), `tests/` proyectos NUnit. Solución `DotNet.Practices.slnx`. Dos librerías: `DotNet.Practices.Abstractions` (ejemplos de patrones) y `DotNet.Practices.Mediator` (uso de MediatR al estilo Woffu, con su propio `CLAUDE.md`).
-- Un ejemplo por carpeta (`Veterinary/`, `Military/`, `Notifications/`, `RequestPipeline/`, `Translation/`, `Mapping/`), con su `CLAUDE.md` que explica el patrón y las decisiones tomadas. Interfaces en `Interfaces/`, implementaciones agrupadas por plural (`Notifiers/`, `Animals/`). Tests en la carpeta espejo.
+- Un ejemplo por carpeta (`Veterinary/`, `Military/`, `Notifications/`, `RequestPipeline/`, `Translation/`, `Mapping/`, `Creational/FactoryMethod/`...), con su `CLAUDE.md` (decisiones, para el agente) y, en los patrones del catálogo, un `README.md` (explicación y diagrama, para humanos). Los patrones del catálogo cuelgan de una carpeta por categoría (`Creational/`, `Structural/`, `Behavioral/`), cada una con un `README.md` comparativo. El README raíz solo indexa. Interfaces en `Interfaces/`, clases base abstractas en `Abstracts/`, implementaciones agrupadas por plural (`Notifiers/`, `Animals/`, `Creators/`). Tests en la carpeta espejo.
 - `Directory.Build.props`: TargetFramework, LangVersion, ImplicitUsings, Nullable. No repetirlos en los csproj.
 - `Directory.Packages.props`: Central Package Management. `PackageReference` sin `Version`; la versión va ahí.
 
 ## Código
 - Clases, métodos y nombres de test en inglés. Comentarios en inglés.
+- Documentación para humanos (`README.md` de cada patrón) en español. Los identificadores de código citados se mantienen en inglés.
 - Nullable habilitado en todo el repo.
 - CRLF en todos los ficheros.
 
