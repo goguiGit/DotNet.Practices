@@ -15,10 +15,12 @@ Directory.Packages.props     Central Package Management (one version per package
 src/
   DotNet.Practices.Abstractions/   pattern examples (one folder each)
   DotNet.Practices.Mediator/       MediatR usage: abstractions, caching and audit behaviors
+  DotNet.Practices.DynamicMapping/ property-bag mapper: LLM compiles a plan once, runtime stays deterministic (in progress)
   DotNet.Practices.Benchmarks/     BenchmarkDotNet: hand-written mapping vs AutoMapper
 tests/
   DotNet.Practices.Abstractions.Tests/
   DotNet.Practices.Mediator.Tests/
+  DotNet.Practices.DynamicMapping.Tests/
 ```
 
 Conventions inside each example: interfaces in `Interfaces/`, implementations of the same abstraction grouped in a plural folder (`Animals/`, `Notifiers/`, `Middlewares/`), orchestrators and records at the root. Namespace equals folder path. Tests mirror the folder.
