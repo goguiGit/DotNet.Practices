@@ -3,8 +3,8 @@
 Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-personal` (clave en el ssh-agent de Windows; el repo usa `core.sshCommand` apuntando al OpenSSH de Windows).
 
 ## Estructura
-- `src/` librerías, `tests/` proyectos NUnit. Solución `DotNet.Practices.slnx`. Dos librerías: `DotNet.Practices.Abstractions` (ejemplos de patrones) y `DotNet.Practices.Mediator` (uso de MediatR al estilo Woffu, con su propio `CLAUDE.md`).
-- Un ejemplo por carpeta (`Veterinary/`, `Military/`, `Notifications/`, `RequestPipeline/`, `Translation/`), con su `CLAUDE.md` que explica el patrón y las decisiones tomadas. Interfaces en `Interfaces/`, implementaciones agrupadas por plural (`Notifiers/`, `Animals/`). Tests en la carpeta espejo.
+- `src/` librerías y el proyecto `DotNet.Practices.Benchmarks` (BenchmarkDotNet, ejecutar en Release), `tests/` proyectos NUnit. Solución `DotNet.Practices.slnx`. Dos librerías: `DotNet.Practices.Abstractions` (ejemplos de patrones) y `DotNet.Practices.Mediator` (uso de MediatR al estilo Woffu, con su propio `CLAUDE.md`).
+- Un ejemplo por carpeta (`Veterinary/`, `Military/`, `Notifications/`, `RequestPipeline/`, `Translation/`, `Mapping/`), con su `CLAUDE.md` que explica el patrón y las decisiones tomadas. Interfaces en `Interfaces/`, implementaciones agrupadas por plural (`Notifiers/`, `Animals/`). Tests en la carpeta espejo.
 - `Directory.Build.props`: TargetFramework, LangVersion, ImplicitUsings, Nullable. No repetirlos en los csproj.
 - `Directory.Packages.props`: Central Package Management. `PackageReference` sin `Version`; la versión va ahí.
 

@@ -15,6 +15,7 @@ Directory.Packages.props     Central Package Management (one version per package
 src/
   DotNet.Practices.Abstractions/   pattern examples (one folder each)
   DotNet.Practices.Mediator/       MediatR usage: abstractions, caching and audit behaviors
+  DotNet.Practices.Benchmarks/     BenchmarkDotNet: hand-written mapping vs AutoMapper
 tests/
   DotNet.Practices.Abstractions.Tests/
   DotNet.Practices.Mediator.Tests/
@@ -170,6 +171,44 @@ sequenceDiagram
 ```
 
 Tests: unit tests use a hand-written `FakeChatClient`; the integration test reads `OpenAI:*` from user-secrets and is ignored when they are missing.
+
+### Mapping: AutoMapper vs hand-written mapper
+
+The recurring team debate. Both mappers implement the same `IOrderMapper` and run the same tests through `TestFixtureSource`, so the comparison is fair. `Order` to `OrderDto` has a nested collection and three computed fields; that is where AutoMapper stops being free and needs a `ForCtorParam` per field, plus an `AssertConfigurationIsValid()` test or mistakes only show at runtime.
+
+```mermaid
+classDiagram
+    class IOrderMapper {
+        <<interface>>
+        +ToDto(Order) OrderDto
+    }
+    class ManualOrderMapper {
+        +ToDto(Order) OrderDto
+    }
+    class AutoMapperOrderMapper {
+        +CreateDefault()$ AutoMapperOrderMapper
+        +ToDto(Order) OrderDto
+    }
+    class OrderProfile {
+        <<AutoMapper.Profile>>
+    }
+    IOrderMapper <|.. ManualOrderMapper
+    IOrderMapper <|.. AutoMapperOrderMapper
+    AutoMapperOrderMapper ..> OrderProfile : configured by
+```
+
+Benchmark (`dotnet run -c Release --project src/DotNet.Practices.Benchmarks`), BenchmarkDotNet 0.15.8, .NET 10.0.14, x64, ShortRunJob. Your numbers will differ; the ratio is the point.
+
+| Method     | Lines | Mean        | Ratio | Allocated | Alloc Ratio |
+|----------- |------:|------------:|------:|----------:|------------:|
+| Manual     | 1     |    97 ns    |  1.00 |     208 B |        1.00 |
+| AutoMapper | 1     |   891 ns    |  9.30 |     368 B |        1.77 |
+| Manual     | 10    |   259 ns    |  1.00 |     712 B |        1.00 |
+| AutoMapper | 10    | 2,579 ns    | 10.04 |    1040 B |        1.46 |
+| Manual     | 100   | 1,744 ns    |  1.00 |    5752 B |        1.00 |
+| AutoMapper | 100   | 6,341 ns    |  3.67 |    7224 B |        1.26 |
+
+Takeaways: AutoMapper costs roughly 10x per call on small objects (fixed reflection and expression overhead) and still 3-4x at 100 lines, with more allocations. For most services the wall-clock difference is irrelevant; the real arguments are compile-time safety, debuggability and the dependency itself: AutoMapper 15+ is commercially licensed, and the last MIT release (14.0.0) carries an unpatched DoS advisory (CVE-2026-32933, self-referential maps only) that is suppressed in `Directory.Build.props` with the reasoning. Default to hand-written `ToDto()` extension methods; consider Mapperly (source generator) when the boilerplate hurts.
 
 ## DotNet.Practices.Mediator
 
