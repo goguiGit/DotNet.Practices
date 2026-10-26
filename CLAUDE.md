@@ -19,6 +19,11 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 - NUnit con `Assert.That(..., Is...)`. Un comportamiento y **un solo `Assert.That` por test**; sin `Assert.Multiple`. Para comprobar la forma de un objeto, compara el record completo con el esperado (`Is.EqualTo(new X(...) { ... })`); para varios casos, `[TestCase]`. Nombre `Clase_Metodo_Resultado`.
 - `dotnet test DotNet.Practices.slnx` antes de commitear.
 
+## Agentes (`.claude/agents/`)
+- `dotnet-reviewer`: revisión rápida de un diff contra `.claude/rules`. Tras implementar algo.
+- `dotnet-architect-reviewer`: revisión profunda de un proyecto con skills externas (awesome-copilot) y locales (dotnet-skills). Al cerrar una pieza grande o antes de un push importante; sus hallazgos se aplican con TDD y en commits separados por tipo (`feat`/`fix`/`refactor`/`test`/`docs`).
+- `test-writer`: escribe el test en rojo. `concept-explainer`: explica un concepto con tipos del repo.
+
 ## Git
 - Conventional commits: feat:, fix:, chore:, refactor:, test:, docs:.
 - No force push.

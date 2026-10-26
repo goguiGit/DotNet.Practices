@@ -2,6 +2,7 @@
   <Folder Name="/.claude/">
     <Folder Name="/.claude/agents/">
       <File Path=".claude/agents/concept-explainer.md" />
+      <File Path=".claude/agents/dotnet-architect-reviewer.md" />
       <File Path=".claude/agents/dotnet-reviewer.md" />
       <File Path=".claude/agents/test-writer.md" />
     </Folder>

@@ -11,7 +11,7 @@ DotNet.Practices.slnx
 Directory.Build.props        shared TargetFramework, LangVersion, Nullable, ImplicitUsings
 Directory.Packages.props     Central Package Management (one version per package)
 .claude/rules/               coding standards, naming, comments
-.claude/agents/              reviewer, test writer, concept explainer
+.claude/agents/              rules reviewer, architect reviewer, test writer, concept explainer
 src/
   DotNet.Practices.Abstractions/   pattern examples (one folder each)
   DotNet.Practices.Mediator/       MediatR usage: abstractions, caching and audit behaviors
