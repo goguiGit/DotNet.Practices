@@ -8,7 +8,8 @@ Mapper dinámico de property bags (esquemas declarativos tipo Rabbit: propiedade
 - `Validators/`: `PropertyValidators` y, cuando lleguen, los validadores ejecutables (`required`, `pattern`, `maxlength`, `futureDate`). Todo lo que valida un valor va aquí, no en `Models/`.
 - `Schema/`: `PropertyBagReader`, el lector de `propertybags.json`.
 - `Plans/`: `MappingPlan`, `PropertyMapping`, `MappingKind`, `PlanKey`.
-- Próximas: `Dependencies/`, `Resolution/`, `Stores/`.
+- `Dependencies/`: `DependencyExtractor` (saca los `Context.X` de una expresión), `DependencyGraph` (dependencias internas vs referencias externas, orden de evaluación estable, `CyclicDependencyException`).
+- Próximas: `Resolution/`, `Stores/`.
 
 ## Decisiones de diseño (no reabrir sin motivo)
 
@@ -27,15 +28,14 @@ Tolera lo que traen los ficheros reales: coma final, `readonly`/`readOnly` (clav
 
 ## Lo que falta (orden previsto)
 
-1. `DependencyGraph`: extrae `Context.X` de las expresiones, orden topológico, ciclos.
-2. Resolución de `extends` (merge por `id`, el hijo sobreescribe).
-3. `ExpressionResolver` para el mini-DSL (interpolación, `Context.X`, catálogo cerrado de `Services.*` con stubs).
-4. `MappingPlanner` con L1/L2 y tests de concurrencia (diez llamadas en frío, una compilación).
-5. `RuleCompiler` sobre `IChatClient`. Usa el Azure OpenAI de user-secrets (`DotNet.Practices.Secrets`, mismas claves `OpenAI:*` que `Translation`). Tests de integración `[Category("Integration")]` con `Assert.Ignore` si faltan.
+1. Resolución de `extends` (merge por `id`, el hijo sobreescribe).
+2. `ExpressionResolver` para el mini-DSL (interpolación, `Context.X`, catálogo cerrado de `Services.*` con stubs).
+3. `MappingPlanner` con L1/L2 y tests de concurrencia (diez llamadas en frío, una compilación).
+4. `RuleCompiler` sobre `IChatClient`. Usa el Azure OpenAI de user-secrets (`DotNet.Practices.Secrets`, mismas claves `OpenAI:*` que `Translation`). Tests de integración `[Category("Integration")]` con `Assert.Ignore` si faltan.
 
 ## Tests
 
 - `Fixtures/PropertyBags/*.propertybags.json`: copias reales de Rabbit (`AdminAdAccount`, `StandardAdAccount`, `SharedFolder`, `DistributionGroup`), se copian al output. `PropertyBagFixtures` las lee.
-- **Una clase de tests por fixture** (`<Nombre>FixtureTests`) con asserts sobre su forma concreta: ids, conteos, expresiones literales, validadores. Si se añade un fixture, se añade su clase.
+- **Una clase de tests por fixture** (`<Nombre>FixtureTests`). Cada test compara una propiedad completa con el record esperado (`Is.EqualTo(new PropertyDefinition(...) { ... })`): un assert, forma entera documentada. Si se añade un fixture, se añade su clase.
 - `PropertyBagReaderTests` solo prueba el comportamiento genérico del lector con JSON inline.
 - Carpeta espejo del código: `Schema/`, `Plans/`, y las que vengan.

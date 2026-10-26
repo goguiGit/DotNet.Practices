@@ -1,6 +1,6 @@
 # Comentarios
 
-Siempre en inglés. El código debe explicarse solo; un comentario solo se justifica cuando el código no puede.
+Siempre en inglés. Un comentario es un code smell por defecto: el código debe explicarse solo, y solo se justifica cuando el código no puede. Antes de escribir uno, intenta un mejor nombre o una estructura más clara. Resúmenes de clase o de fichero, nunca: eso va al `CLAUDE.md` o al `README.md` de la carpeta.
 
 ## Sí
 - El **por qué** de algo no evidente: una restricción externa, un trade-off deliberado, un workaround.

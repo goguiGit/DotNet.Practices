@@ -9,14 +9,14 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 - `Directory.Packages.props`: Central Package Management. `PackageReference` sin `Version`; la versión va ahí.
 
 ## Código
-- Clases, métodos y nombres de test en inglés. Comentarios en inglés.
+- Clases, métodos y nombres de test en inglés. Comentarios en inglés y solo cuando sean imprescindibles: un comentario es un code smell por defecto (ver `.claude/rules/comments.md`).
 - Documentación para humanos (`README.md` de cada patrón) en español. Los identificadores de código citados se mantienen en inglés.
 - Nullable habilitado en todo el repo.
 - CRLF en todos los ficheros.
 
 ## Testing
 - TDD: test en rojo → implementar → verificar. Sin código de producción sin test previo.
-- NUnit con `Assert.That(..., Is...)`. Un comportamiento por test, nombre `Clase_Metodo_Resultado`.
+- NUnit con `Assert.That(..., Is...)`. Un comportamiento y **un solo `Assert.That` por test**; sin `Assert.Multiple`. Para comprobar la forma de un objeto, compara el record completo con el esperado (`Is.EqualTo(new X(...) { ... })`); para varios casos, `[TestCase]`. Nombre `Clase_Metodo_Resultado`.
 - `dotnet test DotNet.Practices.slnx` antes de commitear.
 
 ## Git
