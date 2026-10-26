@@ -116,6 +116,8 @@ dotnet test agent-kit/AgentKit.slnx
 
 Flujo: editar `source/`, regenerar, revisar el diff, commitear fuente y salida juntas. `--check` devuelve 1 si algún fichero generado difiere de disco o falta.
 
+En CI, `.github/workflows/agent-kit-check.yml` ejecuta los tests del generador y el `--check` en Linux en cada push y pull request a `main`: si alguien edita un fichero generado a mano, o cambia la fuente sin regenerar, el workflow falla. Correr en Linux es deliberado: demuestra que la salida es idéntica fuera de Windows.
+
 ## Decisiones
 
 - **CRLF siempre en la salida**, sea cual sea la plataforma. Problema: con `Environment.NewLine` el mismo `source/` generaría ficheros distintos en Windows y Linux y `--check` fallaría según quién lo ejecute. Alternativa descartada: LF y dejar que git normalice. Qué se gana: salida idéntica en cualquier máquina y coherencia con la regla CRLF del repo.
