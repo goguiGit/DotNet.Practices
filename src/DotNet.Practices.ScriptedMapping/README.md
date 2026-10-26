@@ -4,6 +4,40 @@ Cómo lo resolvía el sistema original (Rabbit, provisioning de identidades) y p
 
 Los porqués de Rabbit están deducidos de su código (`src/Algacom.Rabbit.R2.Kernel/PropertyBags/DynamicExpressions`, `src/Algacom.Rabbit.Infrastructure/Configuration/PropertyBags`), no de documentación: Rabbit no la tiene.
 
+## Qué hace, en términos de negocio
+
+El mismo problema que resuelve [`DynamicMapping`](../DotNet.Practices.DynamicMapping/README.md), tal como lo resolvía Rabbit, el producto original de provisioning de identidades. Merece la pena entenderlo desde el punto de vista de quienes lo usan, porque explica muchas de sus decisiones técnicas.
+
+Hay tres personas en la historia:
+
+- **El consultor de implantación** adapta el producto a cada cliente sin tocar el código: escribe en ficheros JSON los tipos de recurso de ese cliente y sus reglas. Para las reglas usa pequeñas expresiones en C# (`$Services.GetFiveTwoOneIdValue(Context.Owner.Lastname, ...)`) porque así puede expresar cualquier cosa que el cliente pida sin esperar una nueva versión del producto.
+- **El administrador** pide un recurso desde la aplicación: elige el tipo (cuenta de administrador), la persona (Ada Lovelace) y rellena el formulario. El formulario ya viene con los campos calculados rellenos y bloqueados, y le avisa al momento si algo obligatorio falta o no tiene el formato correcto.
+- **El servicio** valida todo otra vez en el servidor, garantiza que los identificadores sean únicos en toda la organización y crea el recurso en el directorio.
+
+```mermaid
+flowchart LR
+    subgraph Implantacion["Implantación (una vez por cliente)"]
+        Cons[Consultor] --> JSON[propertybags.json<br/>reglas en expresiones C#]
+        JSON --> Arr[Arranque del servicio:<br/>compila todas las reglas,<br/>falla si alguna está mal]
+    end
+    subgraph Uso["Uso diario"]
+        Adm[Administrador] --> Form[Formulario con<br/>campos calculados y bloqueados]
+        Form --> Srv[Servicio: evalúa, valida,<br/>reserva identificador único]
+        Srv --> AD[(Directorio)]
+    end
+    Arr -. reglas compiladas .-> Srv
+```
+
+Tres consecuencias funcionales de ese diseño, que son las que `DynamicMapping` intenta mejorar:
+
+| Lo que vive el usuario | Por qué pasa |
+|---|---|
+| Cambiar una regla exige reiniciar el servicio, y un error de sintaxis impide que arranque | Todas las reglas se compilan en el arranque; no hay recarga ni validación previa fuera del servicio |
+| A veces un campo calculado aparece vacío sin explicación | Un error de nombre en la expresión se traga en silencio y la propiedad queda sin valor |
+| Los identificadores nunca se repiten, ni entre instancias | Las secuencias se reservan en base de datos y se repite el intento hasta encontrar uno libre |
+
+Lo que Rabbit hace muy bien es lo último: la unicidad real de identificadores. Lo que hace a costa del usuario es lo primero: la configuración es código que se ejecuta con todos los permisos del servicio y solo se comprueba cuando el servicio arranca.
+
 ## Cómo lo hace Rabbit
 
 ```mermaid

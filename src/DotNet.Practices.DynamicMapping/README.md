@@ -4,6 +4,36 @@ Mapper dinámico de **property bags**: esquemas declarativos que describen un ti
 
 El dominio de los ejemplos es Active Directory, tomado de ficheros reales de un sistema de provisioning. El problema es genérico: cualquier esquema con propiedades calculadas unas a partir de otras.
 
+## Qué hace, en términos de negocio
+
+Entra una persona nueva en la empresa. RRHH da de alta a **Ada Lovelace** en su sistema. A partir de ese registro hay que crear varias cosas en el directorio corporativo: una cuenta estándar, quizá una cuenta de administrador, un buzón, una carpeta compartida para su equipo. Cada una de esas cosas es un **tipo de recurso** con una lista de **propiedades** que hay que rellenar: identificador de usuario, nombre visible, ubicación en el directorio, dominio, carpeta personal, fechas, comentarios.
+
+Nadie quiere rellenar eso a mano, y la mayoría de valores no se eligen: **se derivan**. El identificador sale del apellido y el nombre siguiendo una regla de la empresa; el nombre visible copia el identificador; la ubicación en el directorio depende del identificador y del tipo de cuenta; la carpeta personal, del identificador y del servidor elegido. Solo unas pocas propiedades las decide alguien: el dominio (de una lista), la fecha de caducidad, un comentario.
+
+El **property bag** es el documento donde la empresa escribe esas reglas una vez, por tipo de recurso: qué propiedades hay, de qué tipo son, cuáles se calculan y con qué regla, cuáles elige el solicitante, cuáles son obligatorias y qué formato deben tener. El **mapper** es la pieza que, dado ese documento y los datos de la persona, produce todos los valores en el orden correcto y comprueba que cumplen las reglas.
+
+```mermaid
+flowchart LR
+    HR[(RRHH<br/>Ada Lovelace<br/>Research)] --> M
+    Form[Solicitante<br/>dominio: qaacc.int<br/>nombre del grupo: Research Team] --> M
+    Cfg[Configuración<br/>contenedores del directorio<br/>listas de valores] --> M
+    Bag[Property bag<br/>reglas del tipo de recurso] --> M
+    M{Mapper} --> V["Valores validados<br/>SamAccountName = lovelad1-adm-26<br/>DisplayName = lovelad1-adm-26<br/>DistinguishedName = CN=lovelad1-adm-26,OU=Admins,DC=qaacc,DC=int<br/>IdForTargetSystem = qaacc.int\\lovelad1-adm-26"]
+    V --> AD[(Directorio<br/>corporativo)]
+```
+
+Tres fuentes de datos entran, y conviene no confundirlas:
+
+| Fuente | Quién la aporta | Ejemplos |
+|---|---|---|
+| **Registro externo** (`Owner`) | El sistema origen, aquí RRHH | Nombre, apellido, departamento, email |
+| **Inputs** | La persona que pide el recurso, en un formulario | Dominio elegido, nombre del grupo, comentario |
+| **Configuración** (`Options`, lookups) | El equipo que administra la plataforma | En qué rama del directorio van las cuentas de administrador; qué dominios existen |
+
+Y una regla funcional que lo gobierna todo: **lo que se puede derivar no se pregunta, y lo que no se puede derivar no se inventa**. Si falta un dato que nadie dio, el resultado tiene que ser un error claro, no un valor plausible.
+
+Lo que aporta este proyecto frente a escribir las reglas en código: las reglas pueden describirse en lenguaje natural (o en las expresiones del documento) y un modelo de lenguaje las traduce a algo determinista una sola vez por tipo de recurso. A partir de ahí el sistema funciona sin el modelo, igual que siempre, pero sin que un desarrollador haya tenido que programar cada regla.
+
 ## El problema
 
 Un property bag real, resumido:
