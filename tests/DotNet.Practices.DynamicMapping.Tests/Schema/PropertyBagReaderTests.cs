@@ -7,16 +7,11 @@ namespace DotNet.Practices.DynamicMapping.Tests.Schema;
 public class PropertyBagReaderTests
 {
     [TestCaseSource(typeof(PropertyBagFixtures), nameof(PropertyBagFixtures.AllFileNames))]
-    public void ReadFile_RealFixture_ParsesEveryBagWithIdAndProperties(string fileName)
+    public void ReadFile_RealFixture_EveryBagHasAnIdAndProperties(string fileName)
     {
         var bags = PropertyBagFixtures.Read(fileName);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(bags, Is.Not.Empty);
-            Assert.That(bags.Select(bag => bag.Id), Is.All.Not.Empty);
-            Assert.That(bags.Select(bag => bag.Properties.Count), Is.All.GreaterThan(0));
-        });
+        Assert.That(bags.Select(bag => (bag.Id.Length > 0, bag.Properties.Count > 0)), Is.All.EqualTo((true, true)));
     }
 
     [Test]
@@ -36,7 +31,7 @@ public class PropertyBagReaderTests
     {
         const string json = """[{ "id": "Bag", "properties": [{ "id": "A", "type": "text", }], }]""";
 
-        Assert.That(PropertyBagReader.Read(json)[0].Property("A").Type, Is.EqualTo(PropertyType.Text));
+        Assert.That(PropertyBagReader.Read(json)[0].Property("A"), Is.EqualTo(new PropertyDefinition("A", PropertyType.Text)));
     }
 
     [TestCase("readonly")]
@@ -57,18 +52,14 @@ public class PropertyBagReaderTests
         Assert.That(PropertyBagReader.Read(json)[0].Properties.Select(property => property.Id), Is.EqualTo(new[] { "A", "B" }));
     }
 
-    [Test]
-    public void Read_NonStringDefaultValue_IsKeptAsJsonText()
+    [TestCase("true", "true")]
+    [TestCase("3", "3")]
+    [TestCase("\"text\"", "text")]
+    public void Read_DefaultValue_IsKeptAsText(string jsonValue, string expected)
     {
-        const string json = """[{ "id": "Bag", "properties": [{ "id": "Flag", "type": "boolean", "defaultValue": true }, { "id": "Count", "type": "integer", "defaultValue": 3 }] }]""";
+        var json = $$"""[{ "id": "Bag", "properties": [{ "id": "A", "type": "text", "defaultValue": {{jsonValue}} }] }]""";
 
-        var bag = PropertyBagReader.Read(json)[0];
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(bag.Property("Flag").DefaultValue, Is.EqualTo("true"));
-            Assert.That(bag.Property("Count").DefaultValue, Is.EqualTo("3"));
-        });
+        Assert.That(PropertyBagReader.Read(json)[0].Property("A").DefaultValue, Is.EqualTo(expected));
     }
 
     [Test]

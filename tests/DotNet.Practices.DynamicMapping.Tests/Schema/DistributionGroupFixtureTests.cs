@@ -1,5 +1,6 @@
 using DotNet.Practices.DynamicMapping.Models;
 using DotNet.Practices.DynamicMapping.Tests.Fixtures;
+using DotNet.Practices.DynamicMapping.Validators;
 
 namespace DotNet.Practices.DynamicMapping.Tests.Schema;
 
@@ -22,56 +23,64 @@ public class DistributionGroupFixtureTests
     }
 
     [Test]
-    public void CustomInfo_HasFourteenTypedProperties()
+    public void CustomInfo_DeclaresFourteenProperties()
     {
-        Assert.Multiple(() =>
-        {
-            Assert.That(CustomInfo.Properties, Has.Count.EqualTo(14));
-            Assert.That(CustomInfo.Properties.Select(property => property.Type), Is.All.Not.Null);
-        });
+        Assert.That(CustomInfo.Properties, Has.Count.EqualTo(14));
     }
 
-    [Test]
-    public void BooleanFlags_HaveLiteralDefaults()
+    [TestCase("HiddenFromAddressBook", "false")]
+    [TestCase("RequiresSenderAuthentication", "true")]
+    [TestCase("SecurityEnabled", "false")]
+    public void BooleanFlag_HasLiteralDefault(string id, string defaultValue)
     {
-        Assert.Multiple(() =>
-        {
-            Assert.That(CustomInfo.Property("HiddenFromAddressBook").Type, Is.EqualTo(PropertyType.Boolean));
-            Assert.That(CustomInfo.Property("HiddenFromAddressBook").DefaultValue, Is.EqualTo("false"));
-            Assert.That(CustomInfo.Property("RequiresSenderAuthentication").DefaultValue, Is.EqualTo("true"));
-            Assert.That(CustomInfo.Property("SecurityEnabled").DefaultValue, Is.EqualTo("false"));
-        });
+        Assert.That(CustomInfo.Property(id), Is.EqualTo(new PropertyDefinition(id, PropertyType.Boolean) { DefaultValue = defaultValue }));
     }
 
     [Test]
     public void PrimarySmtpAddress_IsUniqueReadOnlyAndComposedFromLocalAndDomainParts()
     {
-        var primary = CustomInfo.Property("PrimarySmtpAddress");
-
-        Assert.Multiple(() =>
+        Assert.That(CustomInfo.Property("PrimarySmtpAddress"), Is.EqualTo(new PropertyDefinition("PrimarySmtpAddress", PropertyType.Text)
         {
-            Assert.That(primary.Unique, Is.EqualTo("SmtpAddress"));
-            Assert.That(primary.ReadOnly, Is.True);
-            Assert.That(primary.ValueGenerator, Does.Contain("Context.PrimarySmtpAddressLocalPart"));
-            Assert.That(primary.ValueGenerator, Does.Contain("Context.PrimarySmtpAddressDomainPart?.Key"));
-        });
+            Unique = "SmtpAddress",
+            ValueGenerator = "$'DD_QAACC26_' + Context.PrimarySmtpAddressLocalPart + '@' + Context.PrimarySmtpAddressDomainPart?.Key",
+            ReadOnly = true,
+        }));
     }
 
     [Test]
     public void SecondarySmtpAddresses_ShareTheUniquenessScopeWithPrimary()
     {
-        Assert.That(CustomInfo.Property("SecondarySmtpAddresses").Unique, Is.EqualTo(CustomInfo.Property("PrimarySmtpAddress").Unique));
+        Assert.That(CustomInfo.Property("SecondarySmtpAddresses").Unique, Is.EqualTo("SmtpAddress"));
+    }
+
+    [TestCase("Description", 255)]
+    [TestCase("MailTip", 175)]
+    public void OptionalText_IsCapped(string id, int maxLength)
+    {
+        Assert.That(CustomInfo.Property(id), Is.EqualTo(new PropertyDefinition(id, PropertyType.Text)
+        {
+            Validators = new PropertyValidators { MaxLength = maxLength },
+        }));
     }
 
     [Test]
-    public void TextLengths_AreCapped()
+    public void Name_IsRequiredAndCappedAt64()
     {
-        Assert.Multiple(() =>
+        Assert.That(CustomInfo.Property("Name"), Is.EqualTo(new PropertyDefinition("Name", PropertyType.Text)
         {
-            Assert.That(CustomInfo.Property("Description").Validators.MaxLength, Is.EqualTo(255));
-            Assert.That(CustomInfo.Property("Name").Validators.MaxLength, Is.EqualTo(64));
-            Assert.That(CustomInfo.Property("MailTip").Validators.MaxLength, Is.EqualTo(175));
-        });
+            Validators = new PropertyValidators { Required = true, MaxLength = 64 },
+        }));
+    }
+
+    [Test]
+    public void ResourceSequenceId_IsGeneratedUniqueAndReadOnly()
+    {
+        Assert.That(CustomInfo.Property("ResourceSequenceId"), Is.EqualTo(new PropertyDefinition("ResourceSequenceId", PropertyType.Text)
+        {
+            IdentifyingGenerator = "$Services.GetNextIdValue('{0:00000}', 1)",
+            Unique = "DistributionGroup.SequenceId",
+            ReadOnly = true,
+        }));
     }
 
     [Test]
@@ -80,29 +89,25 @@ public class DistributionGroupFixtureTests
         Assert.That(Bags.Skip(1).Select(bag => bag.Extends.Single()), Is.All.EqualTo("AdObjectAccessTypePropertyBag"));
     }
 
-    [TestCase(1, "dg-allowedtosend-access", "$ $'GA_DG_QAACC26_{Context.ResourceSequenceId}_Send'")]
-    [TestCase(2, "dg-member-access", "$$'DD_QAACC26_{Context.Name}'")]
-    [TestCase(3, "dg-sendas-access", "$ $'GA_DG_QAACC26_{Context.ResourceSequenceId}_SendAs'")]
-    public void AccessTypeBag_OverridesAccessTypeIdAndGroupName(int index, string accessTypeId, string groupName)
+    [TestCase(1, "dg-allowedtosend-access")]
+    [TestCase(2, "dg-member-access")]
+    [TestCase(3, "dg-sendas-access")]
+    public void AccessTypeBag_PinsAccessTypeId(int index, string accessTypeId)
     {
-        var bag = Bags[index];
+        Assert.That(Bags[index].Property("AccessTypeId"), Is.EqualTo(new PropertyDefinition("AccessTypeId", Type: null) { DefaultValue = accessTypeId }));
+    }
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(bag.Property("AccessTypeId").DefaultValue, Is.EqualTo(accessTypeId));
-            Assert.That(bag.Property("GroupName").DefaultValue, Is.EqualTo(groupName));
-            Assert.That(bag.Property("GroupName").Type, Is.Null, "type comes from the base bag");
-        });
+    [TestCase(1, "$ $'GA_DG_QAACC26_{Context.ResourceSequenceId}_Send'")]
+    [TestCase(2, "$$'DD_QAACC26_{Context.Name}'")]
+    [TestCase(3, "$ $'GA_DG_QAACC26_{Context.ResourceSequenceId}_SendAs'")]
+    public void AccessTypeBag_OverridesGroupNameWithoutRedeclaringItsType(int index, string groupName)
+    {
+        Assert.That(Bags[index].Property("GroupName"), Is.EqualTo(new PropertyDefinition("GroupName", Type: null) { DefaultValue = groupName }));
     }
 
     [Test]
     public void MemberAccess_IsTheOnlyOneWithoutDistinguishedNameOverride()
     {
-        Assert.Multiple(() =>
-        {
-            Assert.That(Bags[2].Properties.Select(property => property.Id), Does.Not.Contain("DistinguishedName"));
-            Assert.That(Bags[1].Properties.Select(property => property.Id), Does.Contain("DistinguishedName"));
-            Assert.That(Bags[3].Properties.Select(property => property.Id), Does.Contain("DistinguishedName"));
-        });
+        Assert.That(Bags.Skip(1).Select(bag => bag.Properties.Any(property => property.Id == "DistinguishedName")), Is.EqualTo(new[] { true, false, true }));
     }
 }

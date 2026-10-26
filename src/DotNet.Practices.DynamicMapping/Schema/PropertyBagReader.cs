@@ -4,8 +4,6 @@ using DotNet.Practices.DynamicMapping.Validators;
 
 namespace DotNet.Practices.DynamicMapping.Schema;
 
-// Reads Rabbit-style propertybags.json. Tolerates what the real files contain: trailing commas,
-// `readonly` and `readOnly`, `name` as a string or a per-language object, non-string default values.
 public static class PropertyBagReader
 {
     private static readonly JsonDocumentOptions DocumentOptions = new()

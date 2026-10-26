@@ -3,7 +3,6 @@ using DotNet.Practices.DynamicMapping.Models;
 
 namespace DotNet.Practices.DynamicMapping.Plans;
 
-// SHA-256 of the canonical form of (target bag, source schema). Same schemas, same key, regardless of ordering.
 public readonly record struct PlanKey(string Value)
 {
     public string Value { get; } = Value is { Length: 64 } && Value.All(Uri.IsHexDigit) && Value == Value.ToLowerInvariant()

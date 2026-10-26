@@ -9,113 +9,104 @@ public class AdminAdAccountFixtureTests
     private static readonly PropertyBag Bag = PropertyBagFixtures.Read("AdminAdAccount.propertybags.json").Single();
 
     [Test]
-    public void Bag_IsAdminAdAccountDataWithElevenPropertiesAndNoBase()
+    public void Bag_IsAdminAdAccountData()
     {
-        Assert.Multiple(() =>
+        Assert.That(Bag.Id, Is.EqualTo("AdminAdAccountData"));
+    }
+
+    [Test]
+    public void Bag_HasNoBase()
+    {
+        Assert.That(Bag.Extends, Is.Empty);
+    }
+
+    [Test]
+    public void Bag_DeclaresElevenPropertiesInOrder()
+    {
+        Assert.That(Bag.Properties.Select(property => property.Id), Is.EqualTo(new[]
         {
-            Assert.That(Bag.Id, Is.EqualTo("AdminAdAccountData"));
-            Assert.That(Bag.Properties, Has.Count.EqualTo(11));
-            Assert.That(Bag.Extends, Is.Empty);
-            Assert.That(Bag.Properties.Select(property => property.Type), Is.All.Not.Null);
-        });
+            "Domain", "SamAccountName", "DisplayName", "AdGuid", "DistinguishedName", "IdForTargetSystem",
+            "UPNOverride", "StartDate", "EndDate", "Comments", "Description",
+        }));
     }
 
     [Test]
     public void Domain_IsRequiredLookup()
     {
-        var domain = Bag.Property("Domain");
-
-        Assert.Multiple(() =>
+        Assert.That(Bag.Property("Domain"), Is.EqualTo(new PropertyDefinition("Domain", PropertyType.Lookup)
         {
-            Assert.That(domain.Type, Is.EqualTo(PropertyType.Lookup));
-            Assert.That(domain.Lookup, Is.EqualTo("Lookup.AdAccountDomain"));
-            Assert.That(domain.Validators.Required, Is.True);
-        });
+            Lookup = "Lookup.AdAccountDomain",
+            Validators = new PropertyValidators { Required = true },
+        }));
     }
 
     [Test]
-    public void SamAccountName_IsUniqueTextWithDefaultFromOwnerAndStrictValidators()
+    public void SamAccountName_IsUniqueTextDerivedFromOwnerWithStrictValidators()
     {
-        var samAccountName = Bag.Property("SamAccountName");
-
-        Assert.Multiple(() =>
+        Assert.That(Bag.Property("SamAccountName"), Is.EqualTo(new PropertyDefinition("SamAccountName", PropertyType.Text)
         {
-            Assert.That(samAccountName.Type, Is.EqualTo(PropertyType.Text));
-            Assert.That(samAccountName.Unique, Is.EqualTo("ADAccountData"));
-            Assert.That(samAccountName.DefaultValue, Is.EqualTo("$Services.GetFiveTwoOneIdValue(Context.Owner.Lastname, Context.Owner.Firstname, false, '-adm-26')"));
-            Assert.That(samAccountName.Validators.Required, Is.True);
-            Assert.That(samAccountName.Validators.MaxLength, Is.EqualTo(20));
-            Assert.That(samAccountName.Validators.Pattern, Is.EqualTo(@"^[^\[\],:;\|=@\+\*\?<>/\\]+$"));
-        });
+            Unique = "ADAccountData",
+            DefaultValue = "$Services.GetFiveTwoOneIdValue(Context.Owner.Lastname, Context.Owner.Firstname, false, '-adm-26')",
+            Validators = new PropertyValidators { Required = true, MaxLength = 20, Pattern = @"^[^\[\],:;\|=@\+\*\?<>/\\]+$" },
+        }));
     }
 
     [Test]
     public void DisplayName_IsReadOnlyCopyOfSamAccountName()
     {
-        var displayName = Bag.Property("DisplayName");
-
-        Assert.Multiple(() =>
+        Assert.That(Bag.Property("DisplayName"), Is.EqualTo(new PropertyDefinition("DisplayName", PropertyType.Text)
         {
-            Assert.That(displayName.ValueGenerator, Is.EqualTo("$Context.SamAccountName"));
-            Assert.That(displayName.ReadOnly, Is.True, "file uses lowercase 'readonly'");
-        });
+            ValueGenerator = "$Context.SamAccountName",
+            ReadOnly = true,
+        }));
     }
 
     [Test]
-    public void AdGuid_IsUniqueIdentifierWithPlainStringName()
+    public void AdGuid_IsUniqueIdentifier()
     {
-        Assert.That(Bag.Property("AdGuid").Type, Is.EqualTo(PropertyType.UniqueIdentifier));
+        Assert.That(Bag.Property("AdGuid"), Is.EqualTo(new PropertyDefinition("AdGuid", PropertyType.UniqueIdentifier)));
     }
 
     [Test]
     public void DistinguishedName_IsReadOnlyInterpolationOfSamAccountNameAndContainer()
     {
-        var distinguishedName = Bag.Property("DistinguishedName");
-
-        Assert.Multiple(() =>
+        Assert.That(Bag.Property("DistinguishedName"), Is.EqualTo(new PropertyDefinition("DistinguishedName", PropertyType.Text)
         {
-            Assert.That(distinguishedName.ReadOnly, Is.True);
-            Assert.That(distinguishedName.ValueGenerator, Does.StartWith("$ $'CN={Context.SamAccountName},"));
-            Assert.That(distinguishedName.ValueGenerator, Does.Contain("Services.GetProvisioningContainer(Context.Options.ProvisioningMapping.Values, 'AdminAdAccountContainer')"));
-        });
+            ValueGenerator = "$ $'CN={Context.SamAccountName},{Services.GetProvisioningContainer(Context.Options.ProvisioningMapping.Values, 'AdminAdAccountContainer')}'",
+            ReadOnly = true,
+        }));
     }
 
     [Test]
     public void IdForTargetSystem_DependsOnDomainAndSamAccountName()
     {
-        var idForTargetSystem = Bag.Property("IdForTargetSystem");
-
-        Assert.Multiple(() =>
+        Assert.That(Bag.Property("IdForTargetSystem"), Is.EqualTo(new PropertyDefinition("IdForTargetSystem", PropertyType.Text)
         {
-            Assert.That(idForTargetSystem.ReadOnly, Is.True);
-            Assert.That(idForTargetSystem.ValueGenerator, Is.EqualTo("$Services.GetIdToCheck(Context.Domain.Key,Context.SamAccountName)"));
-        });
+            ValueGenerator = "$Services.GetIdToCheck(Context.Domain.Key,Context.SamAccountName)",
+            ReadOnly = true,
+        }));
     }
 
     [Test]
-    public void Dates_StartDateSurvivesTrailingCommaAndEndDateMustBeInTheFuture()
+    public void StartDate_IsPlainDateDespiteTrailingComma()
     {
-        Assert.Multiple(() =>
-        {
-            Assert.That(Bag.Property("StartDate").Type, Is.EqualTo(PropertyType.Date));
-            Assert.That(Bag.Property("StartDate").Validators, Is.EqualTo(PropertyValidators.None));
-            Assert.That(Bag.Property("EndDate").Validators.FutureDate, Is.True);
-        });
+        Assert.That(Bag.Property("StartDate"), Is.EqualTo(new PropertyDefinition("StartDate", PropertyType.Date)));
     }
 
     [Test]
-    public void FreeTextProperties_HaveNoRulesAtAll()
+    public void EndDate_MustBeInTheFuture()
     {
-        foreach (var id in new[] { "UPNOverride", "Comments", "Description" })
+        Assert.That(Bag.Property("EndDate"), Is.EqualTo(new PropertyDefinition("EndDate", PropertyType.Date)
         {
-            var property = Bag.Property(id);
-            Assert.Multiple(() =>
-            {
-                Assert.That(property.Type, Is.EqualTo(PropertyType.Text), id);
-                Assert.That(property.DefaultValue, Is.Null, id);
-                Assert.That(property.ValueGenerator, Is.Null, id);
-                Assert.That(property.Validators, Is.EqualTo(PropertyValidators.None), id);
-            });
-        }
+            Validators = new PropertyValidators { FutureDate = true },
+        }));
+    }
+
+    [TestCase("UPNOverride")]
+    [TestCase("Comments")]
+    [TestCase("Description")]
+    public void FreeText_HasNoRules(string id)
+    {
+        Assert.That(Bag.Property(id), Is.EqualTo(new PropertyDefinition(id, PropertyType.Text)));
     }
 }

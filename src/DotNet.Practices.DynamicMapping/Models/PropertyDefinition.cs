@@ -2,9 +2,8 @@ using DotNet.Practices.DynamicMapping.Validators;
 
 namespace DotNet.Practices.DynamicMapping.Models;
 
-// Only what affects how a value is produced. Display names and error messages are deliberately absent:
-// they must not change the mapping plan key.
-// Type is null only for properties of a bag that extends another: they override a base property and inherit its type.
+// Display names and error messages are left out on purpose: they must not change the plan key.
+// Type is null only when the bag extends another and this property overrides one of the base.
 public record PropertyDefinition(string Id, PropertyType? Type)
 {
     public string? Lookup { get; init; }

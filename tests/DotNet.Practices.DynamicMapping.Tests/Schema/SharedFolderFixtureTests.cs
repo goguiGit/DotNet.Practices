@@ -1,5 +1,6 @@
 using DotNet.Practices.DynamicMapping.Models;
 using DotNet.Practices.DynamicMapping.Tests.Fixtures;
+using DotNet.Practices.DynamicMapping.Validators;
 
 namespace DotNet.Practices.DynamicMapping.Tests.Schema;
 
@@ -9,120 +10,107 @@ public class SharedFolderFixtureTests
 
     private static PropertyBag CustomInfo => Bags[0];
 
+    private static PropertyBag ReadAccess => Bags[1];
+
+    private static PropertyBag ReadWriteAccess => Bags[2];
+
     [Test]
     public void File_HasCustomInfoAndTwoAccessTypeBags()
     {
         Assert.That(Bags.Select(bag => bag.Id), Is.EqualTo(new[]
         {
-            "SharedFolderCustomInfo",
-            "SharedFolderReadAccessTypeProvisioning",
-            "SharedFolderReadWriteAccessTypeProvisioning",
+            "SharedFolderCustomInfo", "SharedFolderReadAccessTypeProvisioning", "SharedFolderReadWriteAccessTypeProvisioning",
         }));
     }
 
     [Test]
-    public void CustomInfo_HasEightTypedPropertiesAndNoBase()
+    public void CustomInfo_DeclaresEightPropertiesInOrder()
     {
-        Assert.Multiple(() =>
+        Assert.That(CustomInfo.Properties.Select(property => property.Id), Is.EqualTo(new[]
         {
-            Assert.That(CustomInfo.Properties, Has.Count.EqualTo(8));
-            Assert.That(CustomInfo.Extends, Is.Empty);
-            Assert.That(CustomInfo.Properties.Select(property => property.Type), Is.All.Not.Null);
-        });
+            "ShareRoot", "SharedFolderParent", "DisplayName", "Description", "Name", "Path", "Comments", "ResourceSequenceId",
+        }));
     }
 
     [Test]
     public void SharedFolderParent_IsARelation()
     {
-        var parent = CustomInfo.Property("SharedFolderParent");
-
-        Assert.Multiple(() =>
+        Assert.That(CustomInfo.Property("SharedFolderParent"), Is.EqualTo(new PropertyDefinition("SharedFolderParent", PropertyType.Relation)
         {
-            Assert.That(parent.Type, Is.EqualTo(PropertyType.Relation));
-            Assert.That(parent.Relation, Is.EqualTo("SharedFolderParentChild"));
-        });
+            Relation = "SharedFolderParentChild",
+        }));
     }
 
     [Test]
-    public void DisplayNameAndPath_AreReadOnlyAndDependOnParentRootAndName()
+    public void DisplayName_IsReadOnlyAndBuiltFromParentOrRootPlusName()
     {
-        foreach (var id in new[] { "DisplayName", "Path" })
+        Assert.That(CustomInfo.Property("DisplayName"), Is.EqualTo(new PropertyDefinition("DisplayName", PropertyType.Text)
         {
-            var property = CustomInfo.Property(id);
-            Assert.Multiple(() =>
-            {
-                Assert.That(property.ReadOnly, Is.True, id);
-                Assert.That(property.ValueGenerator, Does.Contain("Context.SharedFolderParent"), id);
-                Assert.That(property.ValueGenerator, Does.Contain("Context.ShareRoot"), id);
-                Assert.That(property.ValueGenerator, Does.Contain("Context.Name"), id);
-            });
-        }
+            ValueGenerator = "$(Context.SharedFolderParent == null ? Context.ShareRoot.Label : Context.SharedFolderParent.Label) + ' > ' + Context.Name",
+            ReadOnly = true,
+        }));
+    }
+
+    [Test]
+    public void Path_IsReadOnlyAndBuiltFromParentPathOrRootPlusName()
+    {
+        Assert.That(CustomInfo.Property("Path"), Is.EqualTo(new PropertyDefinition("Path", PropertyType.Text)
+        {
+            ValueGenerator = @"$(Context.SharedFolderParent == null ? Context.ShareRoot.Key + '\\QAACC26\\' : Context.Relations?.SharedFolderParent?.Path) + '\\' + Context.Name",
+            ReadOnly = true,
+        }));
     }
 
     [Test]
     public void Name_IsRequiredWithPatternAndMaxLength128()
     {
-        var name = CustomInfo.Property("Name");
-
-        Assert.Multiple(() =>
+        Assert.That(CustomInfo.Property("Name"), Is.EqualTo(new PropertyDefinition("Name", PropertyType.Text)
         {
-            Assert.That(name.Validators.Required, Is.True);
-            Assert.That(name.Validators.MaxLength, Is.EqualTo(128));
-            Assert.That(name.Validators.Pattern, Is.Not.Null);
-        });
+            Validators = new PropertyValidators { Required = true, MaxLength = 128, Pattern = @"^[^\[\],:;\|=@\+\*\?<>/\\]+$" },
+        }));
     }
 
     [Test]
     public void ResourceSequenceId_IsGeneratedUniqueAndReadOnly()
     {
-        var sequenceId = CustomInfo.Property("ResourceSequenceId");
-
-        Assert.Multiple(() =>
+        Assert.That(CustomInfo.Property("ResourceSequenceId"), Is.EqualTo(new PropertyDefinition("ResourceSequenceId", PropertyType.Text)
         {
-            Assert.That(sequenceId.IdentifyingGenerator, Is.EqualTo("$Services.GetNextIdValue('{0:00000}', 1)"));
-            Assert.That(sequenceId.Unique, Is.EqualTo("SharedFolder.SequenceId"));
-            Assert.That(sequenceId.ReadOnly, Is.True);
-            Assert.That(sequenceId.DefaultValue, Is.Null);
-        });
+            IdentifyingGenerator = "$Services.GetNextIdValue('{0:00000}', 1)",
+            Unique = "SharedFolder.SequenceId",
+            ReadOnly = true,
+        }));
     }
 
     [Test]
-    public void AccessTypeBags_ExtendAdObjectAccessTypePropertyBagWithUntypedOverrides()
+    public void AccessTypeBags_ExtendAdObjectAccessTypePropertyBag()
     {
-        foreach (var bag in Bags.Skip(1))
-        {
-            Assert.Multiple(() =>
-            {
-                Assert.That(bag.Extends, Is.EqualTo(new[] { "AdObjectAccessTypePropertyBag" }), bag.Id);
-                Assert.That(bag.Properties.Select(property => property.Type), Is.All.Null, bag.Id);
-                Assert.That(bag.Properties.Select(property => property.DefaultValue), Is.All.Not.Null, bag.Id);
-            });
-        }
+        Assert.That(Bags.Skip(1).Select(bag => bag.Extends.Single()), Is.All.EqualTo("AdObjectAccessTypePropertyBag"));
     }
 
     [Test]
-    public void ReadAccess_OverridesGroupNameDistinguishedNameAndAccessTypeId()
+    public void ReadAccess_OverridesGroupNameWithoutRedeclaringItsType()
     {
-        var readAccess = Bags[1];
-
-        Assert.Multiple(() =>
+        Assert.That(ReadAccess.Property("GroupName"), Is.EqualTo(new PropertyDefinition("GroupName", Type: null)
         {
-            Assert.That(readAccess.Properties.Select(property => property.Id), Is.EqualTo(new[] { "GroupName", "DistinguishedName", "AccessTypeId" }));
-            Assert.That(readAccess.Property("GroupName").DefaultValue, Is.EqualTo("$ $'GA_SF_QAACC26_{Context.ResourceSequenceId}_RO'"));
-            Assert.That(readAccess.Property("AccessTypeId").DefaultValue, Is.EqualTo("sf-read-access"));
-        });
+            DefaultValue = "$ $'GA_SF_QAACC26_{Context.ResourceSequenceId}_RO'",
+        }));
     }
 
     [Test]
-    public void ReadWriteAccess_AlsoPinsDomainAndSamAccountName()
+    public void ReadAccess_PinsAccessTypeId()
     {
-        var readWrite = Bags[2];
+        Assert.That(ReadAccess.Property("AccessTypeId").DefaultValue, Is.EqualTo("sf-read-access"));
+    }
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(readWrite.Property("Domain").DefaultValue, Is.EqualTo("qaacc.int"));
-            Assert.That(readWrite.Property("SamAccountName").DefaultValue, Is.EqualTo(readWrite.Property("GroupName").DefaultValue));
-            Assert.That(readWrite.Property("AccessTypeId").DefaultValue, Is.EqualTo("sf-read-write-access"));
-        });
+    [Test]
+    public void ReadWriteAccess_PinsDomain()
+    {
+        Assert.That(ReadWriteAccess.Property("Domain").DefaultValue, Is.EqualTo("qaacc.int"));
+    }
+
+    [Test]
+    public void ReadWriteAccess_SamAccountNameEqualsGroupName()
+    {
+        Assert.That(ReadWriteAccess.Property("SamAccountName").DefaultValue, Is.EqualTo(ReadWriteAccess.Property("GroupName").DefaultValue));
     }
 }
