@@ -23,6 +23,35 @@ tests/
 
 Conventions inside each example: interfaces in `Interfaces/`, implementations of the same abstraction grouped in a plural folder (`Animals/`, `Notifiers/`, `Middlewares/`), orchestrators and records at the root. Namespace equals folder path. Tests mirror the folder.
 
+## Design pattern catalog
+
+One pattern at a time, following the order of the [refactoring.guru](https://refactoring.guru/es/design-patterns/csharp) catalog: creational, then structural, then behavioral. Patterns live under a folder per category (`Creational/`, `Structural/`, `Behavioral/`); each category has a `README.md` comparing its patterns, and each pattern folder has a `README.md` with the explanation and diagram plus a `CLAUDE.md` with the implementation decisions.
+
+| Category | Pattern | Example | Status |
+|---|---|---|---|
+| Creational | Factory Method | [`Creational/FactoryMethod/`](src/DotNet.Practices.Abstractions/Creational/FactoryMethod/README.md) | done |
+| Creational | Abstract Factory | | pending |
+| Creational | Builder | | pending |
+| Creational | Prototype | | pending |
+| Creational | Singleton | | pending |
+| Structural | Adapter | | pending |
+| Structural | Bridge | | pending |
+| Structural | Composite | [`Military/`](#military-composite) | done |
+| Structural | Decorator | | pending |
+| Structural | Facade | | pending |
+| Structural | Flyweight | | pending |
+| Structural | Proxy | | pending |
+| Behavioral | Chain of Responsibility | [`RequestPipeline/`](#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | done |
+| Behavioral | Command | | pending |
+| Behavioral | Iterator | | pending |
+| Behavioral | Mediator | | pending |
+| Behavioral | Memento | | pending |
+| Behavioral | Observer | | pending |
+| Behavioral | State | | pending |
+| Behavioral | Strategy | [`Notifications/`](#notifications-strategy-with-per-tenant-fan-out) | done |
+| Behavioral | Template Method | | pending |
+| Behavioral | Visitor | | pending |
+
 ## Examples
 
 ### Veterinary: abstract class, interface, capability interface
