@@ -17,6 +17,7 @@
     <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/DotNet.Practices.Benchmarks/DotNet.Practices.Benchmarks.csproj" />
     <Project Path="src/DotNet.Practices.Mediator/DotNet.Practices.Mediator.csproj" />
   </Folder>
   <Folder Name="/tests/">
