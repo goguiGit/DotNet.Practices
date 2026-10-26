@@ -29,5 +29,9 @@ Basado en las convenciones oficiales de Microsoft (learn.microsoft.com/dotnet/cs
 
 ## Ficheros
 - Un tipo público por fichero, nombre del fichero = nombre del tipo.
-- File-scoped namespace (`namespace X;`).
+- File-scoped namespace (`namespace X;`). El namespace replica la ruta de carpetas.
+- Cada ejemplo en su propia carpeta. Dentro: interfaces en `Interfaces/`; las implementaciones de una misma abstracción juntas en una carpeta con el plural (`Notifiers/`, `Animals/`); el resto (orquestadores, records, enums) en la raíz del ejemplo.
+- Los tests replican la carpeta del ejemplo en el proyecto de tests.
+- `using` globales del proyecto en `GlobalUsings.cs` en la raíz del proyecto (`global using X;`), no en `<Using Include>` del csproj. Lo que ya cubre `ImplicitUsings` no se repite.
+- Secrets (API keys, endpoints) nunca en `appsettings*.json` ni en código: user-secrets con `UserSecretsId` en el proyecto. Los tests que los necesitan hacen `Assert.Ignore` si faltan.
 - CRLF.

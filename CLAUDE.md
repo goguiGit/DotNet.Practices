@@ -4,6 +4,7 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 
 ## Estructura
 - `src/` librerías, `tests/` proyectos NUnit. Solución `DotNet.Practices.slnx`.
+- Un ejemplo por carpeta (`Veterinary/`, `Military/`, `Notifications/`, `RequestPipeline/`, `Translation/`), con su `CLAUDE.md` que explica el patrón y las decisiones tomadas. Interfaces en `Interfaces/`, implementaciones agrupadas por plural (`Notifiers/`, `Animals/`). Tests en la carpeta espejo.
 - `Directory.Build.props`: TargetFramework, LangVersion, ImplicitUsings, Nullable. No repetirlos en los csproj.
 - `Directory.Packages.props`: Central Package Management. `PackageReference` sin `Version`; la versión va ahí.
 
