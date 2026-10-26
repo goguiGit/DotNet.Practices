@@ -1,6 +1,6 @@
-using DotNet.Practices.Abstractions.Interfaces;
+using DotNet.Practices.Abstractions.Veterinary.Interfaces;
 
-namespace DotNet.Practices.Abstractions;
+namespace DotNet.Practices.Abstractions.Veterinary;
 
 public class Cage
 {

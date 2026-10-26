@@ -1,6 +1,8 @@
-using DotNet.Practices.Abstractions.Interfaces;
+using DotNet.Practices.Abstractions.Veterinary.Animals;
+using DotNet.Practices.Abstractions.Veterinary;
+using DotNet.Practices.Abstractions.Veterinary.Interfaces;
 
-namespace DotNet.Practices.Abstractions.Tests;
+namespace DotNet.Practices.Abstractions.Tests.Veterinary;
 
 public class AnimalTests
 {

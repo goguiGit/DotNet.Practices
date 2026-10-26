@@ -1,4 +1,4 @@
-namespace DotNet.Practices.Abstractions;
+namespace DotNet.Practices.Abstractions.Veterinary.Animals;
 
 public class Horse : Animal
 {
