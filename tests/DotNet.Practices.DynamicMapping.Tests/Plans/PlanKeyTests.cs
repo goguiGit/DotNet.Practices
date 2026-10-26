@@ -6,6 +6,8 @@ namespace DotNet.Practices.DynamicMapping.Tests.Plans;
 
 public class PlanKeyTests
 {
+    private const string Compiler = "compiler-v1";
+
     private static readonly PropertyDefinition Domain = new("Domain", PropertyType.Lookup)
     {
         Lookup = "Lookup.AdAccountDomain",
@@ -27,11 +29,13 @@ public class PlanKeyTests
 
     private static PropertyBag Bag(params PropertyDefinition[] properties) => new("AdminAdAccountData", properties);
 
+    private static PlanKey Key(PropertyBag bag, SourceSchema? source = null, string compiler = Compiler) => PlanKey.For(bag, source ?? HrSchema, compiler);
+
     [Test]
     public void For_SameInputs_ReturnsSameKey()
     {
-        var first = PlanKey.For(Bag(Domain, SamAccountName), HrSchema);
-        var second = PlanKey.For(Bag(Domain, SamAccountName), HrSchema);
+        var first = Key(Bag(Domain, SamAccountName));
+        var second = Key(Bag(Domain, SamAccountName));
 
         Assert.That(second, Is.EqualTo(first));
     }
@@ -39,18 +43,20 @@ public class PlanKeyTests
     [Test]
     public void For_IsSha256Hex()
     {
-        var key = PlanKey.For(Bag(Domain), HrSchema);
+        Assert.That(Key(Bag(Domain)).Value, Does.Match("^[0-9a-f]{64}$"));
+    }
 
-        Assert.That(key.Value, Does.Match("^[0-9a-f]{64}$"));
+    [Test]
+    public void For_KnownInputs_MatchesGoldenHash()
+    {
+        // The canonical form is the cache contract: changing it silently invalidates every stored plan.
+        Assert.That(Key(Bag(Domain, SamAccountName)).Value, Is.EqualTo("e94c3094d143a09513e9b60185ae2ce6a30f048208a42a597bb307977387a629"));
     }
 
     [Test]
     public void For_PropertyOrderDoesNotMatter()
     {
-        var ordered = PlanKey.For(Bag(Domain, SamAccountName), HrSchema);
-        var shuffled = PlanKey.For(Bag(SamAccountName, Domain), HrSchema);
-
-        Assert.That(shuffled, Is.EqualTo(ordered));
+        Assert.That(Key(Bag(SamAccountName, Domain)), Is.EqualTo(Key(Bag(Domain, SamAccountName))));
     }
 
     [Test]
@@ -58,7 +64,16 @@ public class PlanKeyTests
     {
         var reversed = new SourceSchema("Hr.Employees", HrSchema.Columns.Reverse().ToList());
 
-        Assert.That(PlanKey.For(Bag(Domain), reversed), Is.EqualTo(PlanKey.For(Bag(Domain), HrSchema)));
+        Assert.That(Key(Bag(Domain), reversed), Is.EqualTo(Key(Bag(Domain))));
+    }
+
+    [Test]
+    public void For_ExtendsOrderDoesNotMatter()
+    {
+        var ab = new PropertyBag("Bag", [Domain]) { Extends = ["A", "B"] };
+        var ba = new PropertyBag("Bag", [Domain]) { Extends = ["B", "A"] };
+
+        Assert.That(Key(ba), Is.EqualTo(Key(ab)));
     }
 
     [Test]
@@ -66,7 +81,7 @@ public class PlanKeyTests
     {
         var shorter = SamAccountName with { Validators = SamAccountName.Validators with { MaxLength = 15 } };
 
-        Assert.That(PlanKey.For(Bag(shorter), HrSchema), Is.Not.EqualTo(PlanKey.For(Bag(SamAccountName), HrSchema)));
+        Assert.That(Key(Bag(shorter)), Is.Not.EqualTo(Key(Bag(SamAccountName))));
     }
 
     [Test]
@@ -74,7 +89,28 @@ public class PlanKeyTests
     {
         var other = SamAccountName with { DefaultValue = "$Context.Owner.Email" };
 
-        Assert.That(PlanKey.For(Bag(other), HrSchema), Is.Not.EqualTo(PlanKey.For(Bag(SamAccountName), HrSchema)));
+        Assert.That(Key(Bag(other)), Is.Not.EqualTo(Key(Bag(SamAccountName))));
+    }
+
+    [Test]
+    public void For_ChangingReadOnly_ChangesKey()
+    {
+        Assert.That(Key(Bag(Domain with { ReadOnly = true })), Is.Not.EqualTo(Key(Bag(Domain))));
+    }
+
+    [Test]
+    public void For_NullAndEmptyLookup_AreDifferentKeys()
+    {
+        Assert.That(Key(Bag(Domain with { Lookup = "" })), Is.Not.EqualTo(Key(Bag(Domain with { Lookup = null }))));
+    }
+
+    [Test]
+    public void For_FieldSeparatorInsideAValue_CannotCollide()
+    {
+        var pipeInLookup = Domain with { Lookup = "a|b", Relation = null };
+        var pipeAsSeparator = Domain with { Lookup = "a", Relation = "b" };
+
+        Assert.That(Key(Bag(pipeInLookup)), Is.Not.EqualTo(Key(Bag(pipeAsSeparator))));
     }
 
     [Test]
@@ -82,7 +118,7 @@ public class PlanKeyTests
     {
         var wider = new SourceSchema("Hr.Employees", [.. HrSchema.Columns, new SourceColumn("Department", "string")]);
 
-        Assert.That(PlanKey.For(Bag(Domain), wider), Is.Not.EqualTo(PlanKey.For(Bag(Domain), HrSchema)));
+        Assert.That(Key(Bag(Domain), wider), Is.Not.EqualTo(Key(Bag(Domain))));
     }
 
     [Test]
@@ -90,14 +126,24 @@ public class PlanKeyTests
     {
         var retyped = new SourceSchema("Hr.Employees", [new SourceColumn("Firstname", "string"), new SourceColumn("Lastname", "text")]);
 
-        Assert.That(PlanKey.For(Bag(Domain), retyped), Is.Not.EqualTo(PlanKey.For(Bag(Domain), HrSchema)));
+        Assert.That(Key(Bag(Domain), retyped), Is.Not.EqualTo(Key(Bag(Domain))));
     }
 
     [Test]
     public void For_DifferentBagId_ChangesKey()
     {
-        var renamed = new PropertyBag("StandardAdAccountData", [Domain]);
+        Assert.That(Key(new PropertyBag("StandardAdAccountData", [Domain])), Is.Not.EqualTo(Key(Bag(Domain))));
+    }
 
-        Assert.That(PlanKey.For(renamed, HrSchema), Is.Not.EqualTo(PlanKey.For(Bag(Domain), HrSchema)));
+    [Test]
+    public void For_DifferentCompilerVersion_ChangesKey()
+    {
+        Assert.That(Key(Bag(Domain), compiler: "compiler-v2"), Is.Not.EqualTo(Key(Bag(Domain))));
+    }
+
+    [Test]
+    public void Constructor_WithInvalidValue_ThrowsArgumentException()
+    {
+        Assert.That(() => new PlanKey("not-a-hash"), Throws.ArgumentException);
     }
 }
