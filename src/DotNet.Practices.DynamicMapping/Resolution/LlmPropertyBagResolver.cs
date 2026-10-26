@@ -19,10 +19,10 @@ public sealed class LlmPropertyBagResolver(IChatClient chatClient) : IPropertyBa
         "Reply with a single JSON object mapping each property id to its value (string, or null when there is no sensible value).";
 
     private const string ServicesSemantics =
-        "Services.GetFiveTwoOneIdValue(lastname, firstname, addDigit, suffix): lowercase, first five letters of lastname, first two of firstname, then suffix. " +
+        "Services.GetFiveTwoOneIdValue(lastname, firstname, upper, suffix): remove spaces, lowercase (uppercase if upper), first five characters of lastname, first two of firstname, a base-36 counter starting at 1 in uppercase, then suffix; e.g. Lovelace/Ada/-adm-26 gives lovelad1-adm-26. " +
         "Services.GetProvisioningContainer(mapping, key): the Options value ProvisioningMapping.<key>. " +
         "Services.GetIdToCheck(domainKey, sam): '<domainKey>\\<sam>'. " +
-        "Services.GetNextIdValue(format, start): the next sequence number formatted with format, e.g. 00001. " +
+        "Services.GetNextIdValue(format, start): the next sequence number starting at start, formatted with format, e.g. 00001. " +
         "Services.Combine(a, b): a and b joined with a single backslash. " +
         "A lookup value's .Key and .Label are the value itself.";
 
