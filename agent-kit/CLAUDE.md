@@ -7,7 +7,7 @@ Fuente única de reglas y roles de agente del repo, y el generador .NET que prod
 - Solución propia (`AgentKit.slnx`), fuera de `DotNet.Practices.slnx` a propósito: es herramienta, no ejemplo. Usa `Directory.Build.props` y `Directory.Packages.props` de la raíz como todo lo demás.
 - Frontmatter neutral de un rol: `name`, `description`, `model` obligatorios; `tools` lista separada por comas; `readOnly: true` para los que no deben escribir. El lector lanza `FormatException` con el fichero y la clave que falta.
 - Un generador por herramienta implementa `IGenerator`. Añadir una herramienta = una clase y sus tests; nada más cambia.
-- Salida siempre CRLF y UTF-8 sin BOM, independiente de la plataforma, para que `--check` dé lo mismo en cualquier máquina.
+- Salida siempre CRLF y UTF-8 sin BOM, independiente de la plataforma, para que `--check` dé lo mismo en cualquier máquina. Eso exige el `.gitattributes` raíz (`* text=auto eol=crlf`): sin él, un checkout en Linux es LF y `--check` falla aunque nada haya cambiado.
 - `.claude/README.md` y el `CLAUDE.md` raíz se mantienen a mano: son del repo, no de la fuente del kit.
 
 Tests en `agent-kit/tests/DotNet.Practices.AgentKit.Tests/{Source,Generators,Output}/`.

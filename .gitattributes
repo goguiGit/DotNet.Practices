@@ -1,0 +1,7 @@
+# The repo rule is CRLF everywhere; enforce it on every platform so generated files compare byte-for-byte in CI.
+* text=auto eol=crlf
+
+# Binary assets
+*.png binary
+*.pdf binary
+*.pptx binary
