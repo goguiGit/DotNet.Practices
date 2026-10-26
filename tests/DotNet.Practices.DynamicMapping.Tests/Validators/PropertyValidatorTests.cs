@@ -7,6 +7,8 @@ public class PropertyValidatorTests
 {
     private static PropertyDefinition Text(PropertyValidators validators) => new("P", PropertyType.Text) { Validators = validators };
 
+    private static readonly PropertyDefinition FutureEndDate = new("EndDate", PropertyType.Date) { Validators = new PropertyValidators { FutureDate = true } };
+
     [TestCase(null)]
     [TestCase("")]
     [TestCase("   ")]
@@ -37,20 +39,24 @@ public class PropertyValidatorTests
     [Test]
     public void Validate_PastDateWhenFutureRequired_ReportsFutureDate()
     {
-        var endDate = new PropertyDefinition("EndDate", PropertyType.Date) { Validators = new PropertyValidators { FutureDate = true } };
+        Assert.That(PropertyValidator.Validate(FutureEndDate, "2000-01-01"), Is.EqualTo(new[] { "futureDate" }));
+    }
 
-        Assert.That(PropertyValidator.Validate(endDate, "2000-01-01"), Is.EqualTo(new[] { "futureDate" }));
+    [Test]
+    public void Validate_TodayWhenFutureRequired_ReportsFutureDate()
+    {
+        Assert.That(PropertyValidator.Validate(FutureEndDate, DateTime.UtcNow.ToString("yyyy-MM-dd")), Is.EqualTo(new[] { "futureDate" }));
     }
 
     [Test]
     public void Validate_FutureDate_IsValid()
     {
-        var endDate = new PropertyDefinition("EndDate", PropertyType.Date) { Validators = new PropertyValidators { FutureDate = true } };
-
-        Assert.That(PropertyValidator.Validate(endDate, DateTime.UtcNow.AddYears(1).ToString("yyyy-MM-dd")), Is.Empty);
+        Assert.That(PropertyValidator.Validate(FutureEndDate, DateTime.UtcNow.AddYears(1).ToString("yyyy-MM-dd")), Is.Empty);
     }
 
     [TestCase(PropertyType.Date, "not a date", "date")]
+    [TestCase(PropertyType.Date, "2030", "date")]
+    [TestCase(PropertyType.Date, "17/05/2030", "date")]
     [TestCase(PropertyType.Boolean, "yes", "boolean")]
     [TestCase(PropertyType.Integer, "1.5", "integer")]
     [TestCase(PropertyType.UniqueIdentifier, "123", "uniqueIdentifier")]
@@ -60,6 +66,7 @@ public class PropertyValidatorTests
     }
 
     [TestCase(PropertyType.Date, "2030-05-17")]
+    [TestCase(PropertyType.Date, "2030-05-17T10:00:00Z")]
     [TestCase(PropertyType.Boolean, "true")]
     [TestCase(PropertyType.Integer, "42")]
     [TestCase(PropertyType.UniqueIdentifier, "6f9619ff-8b86-d011-b42d-00c04fc964ff")]
@@ -77,5 +84,14 @@ public class PropertyValidatorTests
         var property = Text(new PropertyValidators { Required = true, MaxLength = 2, Pattern = "^a+$" });
 
         Assert.That(PropertyValidator.Validate(property, "bbb"), Is.EqualTo(new[] { "pattern", "maxlength 2" }));
+    }
+
+    [Test]
+    public void Validate_PatternThatTimesOut_ReportsPatternInsteadOfHanging()
+    {
+        // Patterns come from external JSON; a catastrophic one must not stall the validator.
+        var property = Text(new PropertyValidators { Pattern = "^(a|a?)+$" });
+
+        Assert.That(PropertyValidator.Validate(property, new string('a', 60) + "!"), Is.EqualTo(new[] { "pattern" }));
     }
 }
