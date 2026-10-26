@@ -31,13 +31,13 @@ Tolera lo que traen los ficheros reales: coma final, `readonly`/`readOnly` (clav
 
 ## Línea base con LLM (`LlmPropertyBagResolver`)
 
-- Prompt: system con las reglas (orden de evaluación, inputs nunca inventados, solo JSON) y user con Owner, Inputs, Options, la semántica de `Services.*` **en lenguaje natural** y las propiedades en orden de evaluación con expresión, validadores y dependencias. La semántica de `Services.*` es supuesta, no la de Rabbit.
+- Prompt: system con las reglas (orden de evaluación, inputs nunca inventados, solo JSON) y user con Owner, Inputs, Options, la semántica de `Services.*` **en lenguaje natural** y las propiedades en orden de evaluación con expresión, validadores y dependencias. La semántica de `Services.*` es la real de Rabbit (ver `ScriptedMapping`).
 - Resultado observado con gpt-4o sobre los 4 fixtures: todas las propiedades válidas, pero `SamAccountName` salió `lovel-adm-26` (sin las dos letras del nombre) en un bag y `lovelada26` en otro para la misma regla. Es la evidencia de por qué el plan compilado y determinista es el camino de runtime, y esta clase solo la línea base.
 - Sin `Inputs`, las propiedades obligatorias sin expresión (`Name`, `PrimarySmtpAddressLocalPart`) quedan nulas y el test falla: correcto, no deben inventarse.
 
 ## Riesgos abiertos
 
-- Semántica de `Services.*` supuesta en el prompt. Compilada a determinista pasaría de "a veces mal" a "reproduciblemente mal": antes del `RuleCompiler` hacen falta ejemplos dorados (contexto → valores reales) como fixtures.
+- La semántica de `Services.*` del prompt ya es la real (verificada en Rabbit y reproducida en `ScriptedMapping`), pero sigue siendo texto: el `RuleCompiler` debe usar `ScriptedMapping.Services` como catálogo de funciones del mini-DSL y verificar con ejemplos dorados (contexto → valores reales).
 - `Lookup` y `Relation` no se validan en `PropertyValidator` contra el catálogo; lo hace solo el test de integración.
 - El L1 previsto con `Lazy<Task<MappingPlan>>` cachea tareas fallidas: retirar la entrada al fallar.
 - Validadores `emailDomain`, `multiValue`, `range`, etc. siguen ignorados; `SecondarySmtpAddresses` se trata como texto simple.

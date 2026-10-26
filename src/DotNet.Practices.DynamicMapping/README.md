@@ -150,9 +150,25 @@ dotnet test tests/DotNet.Practices.DynamicMapping.Tests --filter "Category=Integ
 
 ## Decisiones de diseño, una a una
 
-### 1. La clave del plan es un hash de JSON canónico, con la versión del compilador
+Cada decisión sigue el mismo esquema: el **problema** que la motivó, la **alternativa descartada** y **qué se gana**. Una decisión sin esos tres puntos no se da por documentada.
 
-Se descartó concatenar campos con `|`: `null` y `""` quedaban iguales y un `|` dentro de un `pattern` (los reales lo tienen) podía colisionar con el separador. JSON lo resuelve gratis. La versión del compilador va dentro para que cambiar el prompt invalide los planes guardados. Un test con hash dorado fija el canónico: si cambia, cambia a propósito.
+### 1. Compilar, no interpretar
+
+- **Problema.** Un identificador de cuenta tiene que salir igual hoy que dentro de seis meses. Un modelo que evalúa la regla en cada registro no lo garantiza: con la misma regla produjo `lovel-adm-26` y `lovelada26`, y Rabbit produce `lovelad1-adm-26` siempre.
+- **Alternativa descartada.** El modelo como intérprete en runtime (`LlmPropertyBagResolver`). Se conserva como línea base y como experimento, no como camino de ejecución.
+- **Qué se gana.** El modelo traduce la regla una vez a una expresión determinista; el runtime es reproducible, auditable, barato y sin dependencia del proveedor en cada registro. El diagrama está en la sección Arquitectura.
+
+### 2. Se cachea el plan, no los valores
+
+- **Problema.** Compilar con el modelo cuesta tiempo y dinero, pero lo que compila depende del esquema, no del registro. Cachear valores no sirve: cada registro es distinto.
+- **Alternativa descartada.** Caché de valores por registro, o recompilar en cada arranque como hace Rabbit.
+- **Qué se gana.** Un `MappingPlan` por par (bag, origen) que sobrevive reinicios en un fichero revisable y se reutiliza desde memoria; el modelo solo trabaja cuando aparece un esquema nuevo.
+
+### 3. La clave del plan es un hash de JSON canónico, con la versión del compilador
+
+- **Problema.** La caché necesita una identidad del esquema que no dependa del orden de propiedades ni de detalles irrelevantes, y que distinga `null` de `""`.
+- **Alternativa descartada.** Concatenar campos con `|`: `null` y `""` quedaban iguales, y un `|` dentro de un `pattern` (los reales lo tienen) podía colisionar con el separador. También se descartó dejar la versión del compilador fuera: cambiar el prompt habría servido planes viejos para siempre.
+- **Qué se gana.** Colisiones imposibles por construcción, invalidación automática al cambiar el compilador y un test de hash dorado que convierte el canónico en contrato: si cambia, cambia a propósito.
 
 ```mermaid
 flowchart LR
@@ -165,9 +181,11 @@ flowchart LR
 
 Fuera de la clave, a propósito: nombres multiidioma y mensajes de error. Cambiarlos no cambia cómo se mapea y recompilaría de más.
 
-### 2. Records inmutables que validan en el constructor, y la trampa de `with`
+### 4. Records inmutables que validan en el constructor, con las propiedades del invariante get-only
 
-El patrón del proyecto: redeclarar la propiedad posicional con un inicializador que valida (`public string Value { get; } = Validate(Value);`). Lo que no se ve: `with` clona copiando campos, **sin** reejecutar inicializadores. Por eso toda propiedad que participe en un invariante es get-only; solo las libres admiten `init`. Y no se usan structs para esto: `default(T)` se salta la validación.
+- **Problema.** Los modelos deben ser inmutables y nunca existir en estado inválido, sin repartir validaciones por todo el código.
+- **Alternativa descartada.** Clases con constructores a mano (más código y sin igualdad por valor), structs (`default(T)` se salta la validación) y records con todas las propiedades `init` (`with` clona copiando campos sin reejecutar inicializadores, así que `mapping with { Kind = Dynamic }` dejaba `Expression = null` con el invariante roto).
+- **Qué se gana.** Igualdad por valor gratis, validación en un único sitio (`public string Value { get; } = Validate(Value);`) y un clon que no puede romper el invariante porque las propiedades que participan en él no se pueden tocar con `with`.
 
 ```mermaid
 flowchart TD
@@ -177,9 +195,11 @@ flowchart TD
     R -- "no, get-only (ahora)" --> CE[error de compilación]
 ```
 
-### 3. El modelo devuelve JSON forzado a temperatura 0
+### 5. El modelo devuelve JSON forzado a temperatura 0
 
-Antes se parseaban fences ```` ```json ```` a mano, y un fence en una sola línea rompía. Ahora `ChatOptions { Temperature = 0, ResponseFormat = Json }`: el proveedor garantiza JSON y el parseo desaparece. Si aun así no es un objeto JSON, `ModelResponseException` lleva el texto crudo para diagnosticar. Owner, Inputs y Options van como bloques JSON etiquetados como datos, y el system dice que los datos nunca son instrucciones: mitiga la inyección vía contenido del registro.
+- **Problema.** La respuesta del modelo hay que parsearla, y venía envuelta en fences ```` ```json ```` con formato variable; un fence en una sola línea rompía el parseo. Además, el contenido del registro (un apellido) entra en el prompt y podría contener instrucciones.
+- **Alternativa descartada.** Parsear fences a mano y pegar el contexto como texto plano en el prompt.
+- **Qué se gana.** `ChatOptions { Temperature = 0, ResponseFormat = Json }`: el proveedor garantiza JSON y el parseo desaparece; lo que no sea un objeto JSON es `ModelResponseException` con el texto crudo. Owner, Inputs y Options viajan como bloques JSON etiquetados como datos, y el system dice que los datos nunca son instrucciones. Mitiga la inyección; no la elimina.
 
 ```mermaid
 sequenceDiagram
@@ -195,11 +215,17 @@ sequenceDiagram
     end
 ```
 
-### 4. Inputs: lo que nadie dio, queda nulo
+### 6. Un input que nadie dio queda nulo
 
-Las propiedades sin expresión son inputs del solicitante. Si el contexto no los trae, el modelo los deja en `null` y el validador `required` falla: así se detectó que el `DistributionGroup` necesitaba `Name` y `PrimarySmtpAddressLocalPart`. Inventar un identificador sería peor que fallar. El test de integración lo vigila: un input presente debe copiarse literal; uno ausente debe quedar nulo.
+- **Problema.** Las propiedades sin expresión son inputs del solicitante (`Name`, `PrimarySmtpAddressLocalPart`). Si faltan, el modelo tiende a inventar un valor plausible.
+- **Alternativa descartada.** Dejar que el modelo rellene lo que falte para que el test pase.
+- **Qué se gana.** Un valor ausente falla por `required` y señala el dato que falta en el contexto; así se descubrió que `DistributionGroup` necesitaba `Inputs`. En un sistema de identidades, inventar es peor que fallar. El test de integración exige que un input presente se copie literal y uno ausente quede nulo.
 
-### 5. Qué comprueba un valor y en qué orden
+### 7. Qué comprueba un valor y en qué orden
+
+- **Problema.** Los validadores vienen del JSON externo y los valores del modelo; hay que comprobarlos de forma determinista y sin que un dato malicioso tumbe el proceso.
+- **Alternativa descartada.** `DateTime.TryParse` (aceptaba `"2030"` como las 20:30) y `Regex.IsMatch` sin tiempo límite (un `pattern` catastrófico colgaría el validador).
+- **Qué se gana.** Fechas solo ISO con `DateOnly.TryParseExact`, regex con `matchTimeout` de 250 ms que convierte el patrón catastrófico en una violación, y una lista de violaciones en orden fijo que el test de integración puede comparar con `Is.Empty`.
 
 ```mermaid
 flowchart TD
@@ -215,11 +241,11 @@ flowchart TD
     F --> OK2[lista de violaciones]
 ```
 
-Fechas solo ISO (`DateOnly.TryParseExact`): `DateTime.TryParse` aceptaba `"2030"` como las 20:30. El `pattern` viene de JSON externo, así que el regex lleva `matchTimeout`: un patrón catastrófico falla el valor, no cuelga el proceso.
+### 8. Un ciclo culpa solo a sus miembros
 
-### 6. Un ciclo culpa solo a sus miembros
-
-Cuando el orden topológico se atasca, quedan bloqueados tanto los nodos del ciclo como los que dependen de él. La excepción pela los nodos de los que nadie espera nada hasta quedarse con el ciclo.
+- **Problema.** Cuando el orden topológico se atasca quedan bloqueados tanto los nodos del ciclo como los que dependen de él; un error que nombra a todos despista.
+- **Alternativa descartada.** Listar todo lo pendiente (así lo hace Rabbit, y además con un contador que puede desbordar).
+- **Qué se gana.** La excepción pela los nodos de los que nadie espera nada y se queda con el ciclo. Y se detecta en tiempo de diseño, sobre el esquema, no en cada petición.
 
 ```mermaid
 flowchart LR
@@ -230,10 +256,17 @@ flowchart LR
 
 `A` y `B` son el ciclo; `C` solo espera a `A` y no se nombra en el error.
 
-### 7. Lo que sigue abierto
+### 9. Lector tolerante probado contra los ficheros reales
 
-- La semántica de `Services.*` del prompt es supuesta, no la de Rabbit. Compilarla a determinista la haría reproduciblemente errónea: antes del `RuleCompiler` hacen falta ejemplos dorados (contexto → valores reales).
+- **Problema.** Los `propertybags.json` reales tienen coma final, `readonly` y `readOnly` mezclados, `name` como string o como objeto y defaults que no son string.
+- **Alternativa descartada.** JSON estricto que falla al arrancar (Rabbit) o corregir los ficheros a mano.
+- **Qué se gana.** El lector acepta lo que hay y una clase de tests por fichero documenta la forma exacta de cada bag con igualdad de records.
+
+### 10. Lo que sigue abierto
+
+- La semántica real de `Services.*` ya está documentada y reproducida en `ScriptedMapping`; el prompt la describe, pero el compilador de planes deberá usar ese catálogo como funciones del mini-DSL, no como texto.
 - `Lookup` y `Relation` no se validan en runtime contra el catálogo; hoy solo lo hace el test de integración.
-- `extends` no se resuelve todavía: el bag base `AdObjectAccessTypePropertyBag` no está en el repo.
+- `extends` no se resuelve todavía: el bag base `AdObjectAccessTypePropertyBag` es una clase C# de Rabbit y no está en el repo.
+- Unicidad real de ids: Rabbit reserva secuencias en base de datos; aquí no hay equivalente.
 
 Las decisiones, en formato corto para el agente, están en [`CLAUDE.md`](CLAUDE.md).
