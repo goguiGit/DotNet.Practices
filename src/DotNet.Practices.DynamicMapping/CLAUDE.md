@@ -5,7 +5,7 @@ Mapper dinámico de property bags (esquemas declarativos tipo Rabbit: propiedade
 ## Carpetas
 
 - `Models/`: records del esquema (`PropertyBag`, `PropertyDefinition`, `PropertyType`, `SourceSchema`, `SourceColumn`). Solo lo que afecta al mapeo; sin nombres multiidioma ni mensajes de error.
-- `Validators/`: `PropertyValidators` (declaración) y `PropertyValidator.Validate(property, value)` (ejecución: tipo, `required`, `pattern`, `maxlength`, `futureDate`; devuelve la lista de violaciones). Todo lo que valida un valor va aquí, no en `Models/`.
+- `Validators/`: `PropertyValidators` (declaración) y `PropertyValidator.Validate(property, value)` (ejecución: tipo, `required`, `pattern`, `maxlength`, `futureDate`; devuelve la lista de violaciones). Fechas solo ISO (`DateOnly.TryParseExact`; `DateTime.TryParse` aceptaba `"2030"` como hora). El regex del `pattern` lleva `matchTimeout`: un patrón catastrófico del JSON externo falla el valor, no cuelga el proceso. Todo lo que valida un valor va aquí, no en `Models/`.
 - `Schema/`: `PropertyBagReader`, el lector de `propertybags.json`.
 - `Plans/`: `MappingPlan`, `PropertyMapping`, `MappingKind`, `PlanKey`.
 - `Dependencies/`: `DependencyExtractor` (saca los `Context.X` de una expresión), `DependencyGraph` (dependencias internas vs referencias externas, orden de evaluación estable, `CyclicDependencyException`).
@@ -16,9 +16,11 @@ Mapper dinámico de property bags (esquemas declarativos tipo Rabbit: propiedade
 
 - **Compilar, no interpretar.** El LLM es el compilador en tiempo de diseño: traduce una regla (código o lenguaje natural) a una expresión determinista en un mini-DSL cerrado y extrae sus dependencias. En runtime se ejecuta la expresión sin modelo. El LLM en runtime queda solo para propiedades `Dynamic` (texto libre, elección semántica), siempre validadas después.
 - **Se cachea el plan, no los valores.** `MappingPlan` describe cómo se obtiene cada propiedad; depende del esquema, no del registro. Dos niveles: `ConcurrentDictionary<PlanKey, Lazy<Task<MappingPlan>>>` en memoria y un store persistente (`IMappingPlanStore`, primera implementación en fichero JSON revisable en PR).
-- **`PlanKey`** = SHA-256 del canónico de (bag destino, esquema origen). Propiedades y columnas ordenadas por nombre: el orden no cambia la clave. Incluye tipo, lookup, relation, expresiones, `unique`, `readOnly`, `extends` y validadores. **Excluye** nombres multiidioma y mensajes de error. Sin TTL: el plan caduca cuando cambia la clave.
+- **`PlanKey`** = SHA-256 del canónico **en JSON** de (bag destino, esquema origen, versión del compilador). JSON y no campos unidos por `|`: así `null` y `""` difieren y un separador dentro de un valor no puede colisionar. Propiedades, columnas y `extends` ordenados: el orden no cambia la clave. Incluye tipo, lookup, relation, expresiones, `unique`, `readOnly` y validadores. **Excluye** nombres multiidioma y mensajes de error. Sin TTL: el plan caduca cuando cambia la clave. `For_KnownInputs_MatchesGoldenHash` fija el canónico: si cambia, cambia el hash dorado a propósito y se asume que invalida todos los planes guardados.
+- La clave se calcula **después** de resolver `extends`: con el bag sin fusionar solo entra el nombre del base, y un cambio en el base no invalidaría a los hijos.
 - `MappingKind`: `Expression` y `Lookup` corren sin modelo; `Dynamic` lo necesita en cada registro; `Unmapped` es para una persona.
-- Records con validación en el constructor mediante redeclaración de la propiedad posicional (`public string Value { get; } = Validate(Value);`). Es el patrón del proyecto para records inmutables con invariantes.
+- Records `sealed` con validación en el constructor mediante redeclaración de la propiedad posicional (`public string Value { get; } = Validate(Value);`). Trampa: `with` copia campos sin reejecutar inicializadores, así que toda propiedad que participe en un invariante se redeclara **get-only** (`Kind` y `Expression` en `PropertyMapping`); solo las libres admiten `init`. Y no usar structs para esto: `default(T)` se salta la validación.
+- `PropertyBag` y `MappingPlan` rechazan ids duplicados en el constructor; `CyclicDependencyException.PropertyIds` lista solo los miembros del ciclo, no los que dependen de él.
 
 ## Lector (`Schema/PropertyBagReader`)
 
@@ -33,6 +35,13 @@ Tolera lo que traen los ficheros reales: coma final, `readonly`/`readOnly` (clav
 - Resultado observado con gpt-4o sobre los 4 fixtures: todas las propiedades válidas, pero `SamAccountName` salió `lovel-adm-26` (sin las dos letras del nombre) en un bag y `lovelada26` en otro para la misma regla. Es la evidencia de por qué el plan compilado y determinista es el camino de runtime, y esta clase solo la línea base.
 - Sin `Inputs`, las propiedades obligatorias sin expresión (`Name`, `PrimarySmtpAddressLocalPart`) quedan nulas y el test falla: correcto, no deben inventarse.
 
+## Riesgos abiertos
+
+- Semántica de `Services.*` supuesta en el prompt. Compilada a determinista pasaría de "a veces mal" a "reproduciblemente mal": antes del `RuleCompiler` hacen falta ejemplos dorados (contexto → valores reales) como fixtures.
+- `Lookup` y `Relation` no se validan en `PropertyValidator` contra el catálogo; lo hace solo el test de integración.
+- El L1 previsto con `Lazy<Task<MappingPlan>>` cachea tareas fallidas: retirar la entrada al fallar.
+- Validadores `emailDomain`, `multiValue`, `range`, etc. siguen ignorados; `SecondarySmtpAddresses` se trata como texto simple.
+
 ## Lo que falta (orden previsto)
 
 1. Resolución de `extends` (merge por `id`, el hijo sobreescribe).
@@ -46,5 +55,5 @@ Tolera lo que traen los ficheros reales: coma final, `readonly`/`readOnly` (clav
 - **Una clase de tests por fixture** (`<Nombre>FixtureTests`). Cada test compara una propiedad completa con el record esperado (`Is.EqualTo(new PropertyDefinition(...) { ... })`): un assert, forma entera documentada. Si se añade un fixture, se añade su clase.
 - `PropertyBagReaderTests` solo prueba el comportamiento genérico del lector con JSON inline.
 - `PropertyBagOverviewTests`: un caso por bag que escribe en el log la tabla de propiedades, dependencias y orden; asserta que no hay ciclos.
-- `LlmPropertyBagResolverIntegrationTests` (`[Category("Integration")]`): el test general por tipo. Un caso por bag sin `extends`, resuelve todas las propiedades con el Azure OpenAI de user-secrets, escribe los valores en el log y asserta que ninguna propiedad falta ni viola sus validadores. Se ignora sin secrets. `SampleContext.AdaLovelace` es el contexto compartido.
+- `LlmPropertyBagResolverIntegrationTests` (`[Category("Integration")]`): el test general por tipo. Un caso por bag sin `extends`, resuelve todas las propiedades con el Azure OpenAI de user-secrets, escribe valores y tokens en el log y asserta, con un solo `Assert.That` sobre la lista de violaciones: validadores declarados, lookups dentro de Options, inputs copiados literalmente o nulos si nadie los dio, copias `$Context.X` iguales a X, y ninguna propiedad no declarada. Se ignora sin secrets. `SampleContext.AdaLovelace` es el contexto compartido.
 - Carpeta espejo del código: `Schema/`, `Plans/`, y las que vengan.

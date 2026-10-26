@@ -76,7 +76,7 @@ flowchart TB
 
 ### El plan se cachea, los valores no
 
-`MappingPlan` describe **cómo** se obtiene cada propiedad; depende del esquema, no del registro. La clave es un SHA-256 del canónico de (bag destino, esquema origen): mismo esquema, misma clave, da igual el orden de propiedades o columnas. Nombres multiidioma y mensajes de error quedan fuera porque no afectan al mapeo. No hay TTL: el plan caduca cuando cambia la clave.
+`MappingPlan` describe **cómo** se obtiene cada propiedad; depende del esquema, no del registro. La clave es un SHA-256 del canónico JSON de (bag destino, esquema origen, versión del compilador): mismo esquema y mismo compilador, misma clave, da igual el orden de propiedades o columnas; cambiar el prompt del compilador invalida los planes. Nombres multiidioma y mensajes de error quedan fuera porque no afectan al mapeo. No hay TTL: el plan caduca cuando cambia la clave.
 
 ```mermaid
 flowchart LR
@@ -145,7 +145,7 @@ dotnet test tests/DotNet.Practices.DynamicMapping.Tests --filter "Category=Integ
 
 - `Fixtures/PropertyBags/`: cuatro `propertybags.json` reales (`AdminAdAccount`, `StandardAdAccount`, `SharedFolder`, `DistributionGroup`). Una clase de tests por fichero compara cada propiedad con el record esperado completo.
 - `PropertyBagOverviewTests`: un caso por bag, escribe en el log propiedades, dependencias y orden; asserta que no hay ciclos.
-- `LlmPropertyBagResolverIntegrationTests`: un caso por bag, resuelve todas las propiedades con el modelo real y asserta que ninguna falta ni viola validadores. Lee `OpenAI:Endpoint`, `OpenAI:ApiKey`, `OpenAI:DeploymentName` de user-secrets (`DotNet.Practices.Secrets`) y se ignora si no están.
+- `LlmPropertyBagResolverIntegrationTests`: un caso por bag, resuelve todas las propiedades con el modelo real (JSON forzado, temperatura 0) y asserta en una sola lista de violaciones: validadores, lookups dentro del catálogo, inputs copiados literalmente, copias `$Context.X` consistentes y ninguna propiedad inventada. Lee `OpenAI:Endpoint`, `OpenAI:ApiKey`, `OpenAI:DeploymentName` de user-secrets (`DotNet.Practices.Secrets`) y se ignora si no están.
 - Un `Assert.That` por test. Sin mocks: `FakeChatClient` devuelve una respuesta fija y guarda el prompt.
 
 ## Decisiones
