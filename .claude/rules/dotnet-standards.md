@@ -16,7 +16,7 @@ Basado en las convenciones oficiales de Microsoft (learn.microsoft.com/dotnet/cs
 ## Expresiones
 - `switch` expression y pattern matching antes que cadenas de `if/else`.
 - Expression-bodied members (`=>`) para una sola expresión.
-- `var` cuando el tipo es evidente en la misma línea; tipo explícito si no.
+- `var` siempre en el lado izquierdo (`var transport = logistics.CreateTransport();`), también cuando el tipo no se lee en la línea. Única excepción: inicializadores sin tipo propio (`null`, `default`), donde el tipo explícito es obligatorio.
 - `is null` / `is not null`, no `== null`.
 
 ## Async

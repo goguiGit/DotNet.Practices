@@ -23,7 +23,7 @@ public class AnimalTests
     [Test]
     public void Animal_Greet_ReturnsDefaultGreetingWhenNotOverridden()
     {
-        IAnimal animal = new Fish();
+        var animal = new Fish();
 
         Assert.That(animal.Greet(), Is.EqualTo("Hello"));
     }
@@ -31,7 +31,7 @@ public class AnimalTests
     [Test]
     public void Dog_Greet_ReturnsWoof()
     {
-        IAnimal animal = new Dog();
+        var animal = new Dog();
 
         Assert.That(animal.Greet(), Is.EqualTo("Woof"));
     }
@@ -39,7 +39,7 @@ public class AnimalTests
     [Test]
     public void Cat_Greet_ReturnsMeow()
     {
-        IAnimal animal = new Cat();
+        var animal = new Cat();
 
         Assert.That(animal.Greet(), Is.EqualTo("Meow"));
     }
