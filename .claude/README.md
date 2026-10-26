@@ -20,6 +20,8 @@ flowchart LR
 
 ## Inventario
 
+Todo lo que hay en `rules/` y `agents/` está **generado** desde `agent-kit/source/` (ver [`agent-kit/README.md`](../agent-kit/README.md)); los mismos ficheros fuente producen `AGENTS.md`, `.cursor/rules/` y `.github/copilot-instructions.md`. Para cambiar algo: editar la fuente y regenerar.
+
 | Pieza | Papel | Puede escribir |
 |---|---|---|
 | `rules/dotnet-standards.md` | Estándares de C# y .NET, carpetas, `var`, secrets | |

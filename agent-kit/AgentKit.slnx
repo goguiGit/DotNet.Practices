@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DotNet.Practices.AgentKit/DotNet.Practices.AgentKit.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DotNet.Practices.AgentKit.Tests/DotNet.Practices.AgentKit.Tests.csproj" />
+  </Folder>
+</Solution>

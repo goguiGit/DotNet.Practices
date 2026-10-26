@@ -1,0 +1,1 @@
+Este repositorio describe su estructura, convenciones y mapa de contexto en `CLAUDE.md`; léelo primero. Las reglas de abajo se aplican a todo el código y a toda la documentación. Los roles describen cómo trabajar según la tarea: investigar sin tocar nada, implementar con pruebas primero, verificar sin arreglar, revisar en solo lectura, documentar para dos públicos.
