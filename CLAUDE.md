@@ -22,10 +22,18 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 - `dotnet test DotNet.Practices.slnx` antes de commitear.
 
 ## Agentes (`.claude/agents/`)
-- `dotnet-reviewer`: revisión rápida de un diff contra `.claude/rules`. Tras implementar algo.
-- `dotnet-architect-reviewer`: revisión profunda de un proyecto con skills externas (awesome-copilot) y locales (dotnet-skills). Al cerrar una pieza grande o antes de un push importante; sus hallazgos se aplican con TDD y en commits separados por tipo (`feat`/`fix`/`refactor`/`test`/`docs`).
-- `test-writer`: escribe el test en rojo. `concept-explainer`: explica un concepto con tipos del repo.
+Inventario, papeles y origen en `.claude/README.md`. En corto: `researcher` (solo lectura), `implementer` (tarea cerrada con TDD), `test-writer` (solo el test en rojo), `tester` (verifica, no arregla), `dotnet-reviewer` (diff contra reglas), `dotnet-architect-reviewer` (revisión profunda; sus hallazgos se aplican con TDD en commits por tipo), `doc-writer` (README en dos partes y CLAUDE.md), `concept-explainer`. Los revisores, el investigador y el verificador no pueden escribir.
 
+## Mapa de contexto
+Cargar solo lo que la tarea necesita:
+
+| Tarea | Leer |
+|---|---|
+| Escribir código C# | `.claude/rules/dotnet-standards.md`, `naming.md`, `comments.md`, `implementation.md` y el `CLAUDE.md` de la carpeta |
+| Documentar | `.claude/rules/documentation.md` y el `README.md` vecino como modelo |
+| Tocar un patrón | `src/DotNet.Practices.Abstractions/<Categoría>/README.md` y el `CLAUDE.md` del patrón |
+| Mediator, DynamicMapping, ScriptedMapping | El `CLAUDE.md` y `README.md` del proyecto |
+| Tests de integración, secrets | `.claude/rules/implementation.md` (seguridad al verificar) y `src/DotNet.Practices.Abstractions/Translation/CLAUDE.md` (user-secrets) |
 ## Git
 - Conventional commits: feat:, fix:, chore:, refactor:, test:, docs:.
 - No force push.

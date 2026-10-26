@@ -1,14 +1,20 @@
 <Solution>
   <Folder Name="/.claude/">
+    <File Path=".claude/README.md" />
     <Folder Name="/.claude/agents/">
       <File Path=".claude/agents/concept-explainer.md" />
+      <File Path=".claude/agents/doc-writer.md" />
       <File Path=".claude/agents/dotnet-architect-reviewer.md" />
+      <File Path=".claude/agents/implementer.md" />
+      <File Path=".claude/agents/researcher.md" />
+      <File Path=".claude/agents/tester.md" />
       <File Path=".claude/agents/dotnet-reviewer.md" />
       <File Path=".claude/agents/test-writer.md" />
     </Folder>
     <Folder Name="/.claude/rules/">
       <File Path=".claude/rules/comments.md" />
       <File Path=".claude/rules/documentation.md" />
+      <File Path=".claude/rules/implementation.md" />
       <File Path=".claude/rules/dotnet-standards.md" />
       <File Path=".claude/rules/naming.md" />
     </Folder>
