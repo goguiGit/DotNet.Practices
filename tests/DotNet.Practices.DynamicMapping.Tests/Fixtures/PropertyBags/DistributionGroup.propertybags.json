@@ -1,0 +1,217 @@
+[{
+		"id": "DistributionGroupCustomInfo",
+		"properties": [{
+				"id": "DisplayName",
+				"name": {
+					"": "Display name",
+					"de": "Anzeigename",
+					"fr": "Nom affiché",
+					"it": "Nome visualizzato"
+				},
+				"type": "text",
+				"valueGenerator": "$'DD_' + Context.Name",
+				"readOnly": true
+			}, {
+				"id": "Description",
+				"name": {
+					"": "Description",
+					"de": "Beschreibung",
+					"it": "Descrizione",
+					"fr": "Description"
+				},
+				"type": "text",
+				"validators": {
+					"maxlength": 255
+				}
+			}, {
+				"id": "Name",
+				"name": {
+					"": "Name",
+					"de": "Name",
+					"it": "Name",
+					"fr": "Nom"
+				},
+				"type": "text",
+				"validators": {
+					"required": true,
+					"maxlength": 64,
+					"noWhitespace": false
+				}
+			}, {
+				"id": "PrimarySmtpAddressLocalPart",
+				"name": {
+					"": "Email address (local part)",
+					"de": "E-Mail-Adresse (Lokalteil)",
+					"it": "Indirizzo e-mail (parte locale)",
+					"fr": "Adresse e-mail (partie locale)"
+				},
+				"type": "text",
+				"validators": {
+					"required": true,
+					"emailLocalValidator": true,
+					"maxlength": 64
+				}
+			}, {
+				"id": "PrimarySmtpAddressDomainPart",
+				"name": {
+					"": "Email address (domain part)",
+					"de": "E-Mail-Adresse (Domänenteil)",
+					"it": "Indirizzo email (parte dominio)",
+					"fr": "Adresse e-mail (partie du domaine)"
+				},
+				"type": "lookup",
+				"lookup": "Lookup.EmailDomain",
+				"validators": {
+					"required": true
+				}
+			}, {
+				"id": "SecondarySmtpAddresses",
+				"name": {
+					"": "Secondary email addresses",
+					"de": "Zusätzliche E-Mail-Adressen",
+					"it": "Indirizzi email secondari",
+					"fr": "Adresses e-mail secondaires"
+				},
+				"type": "text",
+				"unique": "SmtpAddress",
+				"multiValue": true,
+				"validators": {
+					"multiEmail": true
+				}
+			}, {
+				"id": "PrimarySmtpAddress",
+				"name": {
+					"": "Primary email address",
+					"de": "Primäre E-Mail-Adresse",
+					"it": "Indirizzo e-mail principale",
+					"fr": "Adresse e-mail principale"
+				},
+				"type": "text",
+				"unique": "SmtpAddress",
+				"valueGenerator": "$'DD_QAACC26_' + Context.PrimarySmtpAddressLocalPart + '@' + Context.PrimarySmtpAddressDomainPart?.Key",
+				"readOnly": true
+			}, {
+				"id": "HiddenFromAddressBook",
+				"name": {
+					"": "Hidden from address book",
+					"de": "Versteckt im Adressbuch",
+					"it": "Nascosto dalla rubrica",
+					"fr": "Caché du carnet d'adresses"
+				},
+				"type": "boolean",
+				"defaultValue": "false"
+			}, {
+				"id": "RequiresSenderAuthentication",
+				"name": {
+					"": "Requires sender authentication",
+					"de": "Absender Authentifikation erforderlich",
+					"it": "Richiede l'autenticazione del mittente",
+					"fr": "Requiert l'authentification de l'expéditeur"
+				},
+				"type": "boolean",
+				"defaultValue": "true"
+			}, {
+				"id": "SecurityEnabled",
+				"name": {
+					"": "Security enabled",
+					"de": "Sicherheit aktiviert",
+					"it": "Sicurezza abilitata",
+					"fr": "Sécurité activée"
+				},
+				"type": "boolean",
+				"defaultValue": "false"
+			}, {
+				"id": "MailTip",
+				"name": {
+					"": "Mail tip",
+					"de": "Mail Hinweis",
+					"it": "Suggerimento per la posta",
+					"fr": "Mail tip"
+				},
+				"type": "text",
+				"validators": {
+					"maxlength": 175
+				}
+			}, {
+				"id": "Comments",
+				"name": {
+					"": "Comments",
+					"de": "Kommentare",
+					"it": "Commenti",
+					"fr": "Commentaires"
+				},
+				"type": "text"
+			}, {
+				"id": "ResourceSequenceId",
+				"name": {
+					"": "Resource Sequence Id"
+				},
+				"type": "text",
+				"identifyingGenerator": "$Services.GetNextIdValue('{0:00000}', 1)",
+				"unique": "DistributionGroup.SequenceId",
+				"readOnly": true
+			},
+			{
+				"id": "DistinguishedName",
+				"name":  "DistinguishedName",
+				"type": "text",
+				"valueGenerator": "$ $'CN=DD_QAACC26_{Context.ResourceSequenceId},{Services.GetProvisioningContainer(Context.Options.ProvisioningMapping.Values, 'DistributionGroupContainer')}'",
+				"unique": "DistributionGroup.DistinguishedName",
+				"readOnly": true
+			}
+		]
+	}, {
+		"id": "DistributionGroupAllowedToSendAccessTypeProvisioning",
+		"extends": ["AdObjectAccessTypePropertyBag"],
+		"properties": [{
+				"id": "GroupName",
+				"defaultValue": "$ $'GA_DG_QAACC26_{Context.ResourceSequenceId}_Send'"
+			}, {
+				"id": "GroupEmail",
+				"defaultValue": "$ $'ga_dg_qaacc26_{Context.ResourceSequenceId}_send@{Context.PrimarySmtpAddressDomainPart.Key}'"
+			},
+			{
+				"id": "DistinguishedName",
+				"defaultValue": "$ $'CN=GA_DG_QAACC26_{Context.ResourceSequenceId}_Send,{Services.GetProvisioningContainer(Context.Options.ProvisioningMapping.Values, 'DistributionGroupAccessTypeGroupContainer')}'"
+			},
+			{
+				"id": "AccessTypeId",
+				"defaultValue": "dg-allowedtosend-access"
+			}
+		]
+	}, {
+		"id": "DistributionGroupMemberAccessTypeProvisioning",
+		"extends": ["AdObjectAccessTypePropertyBag"],
+		"properties": [{
+				"id": "GroupName",
+				"defaultValue": "$$'DD_QAACC26_{Context.Name}'"
+			}, {
+				"id": "GroupEmail",
+				"defaultValue": "$$'{Context.PrimarySmtpAddress}'"
+			},
+			{
+				"id": "AccessTypeId",
+				"defaultValue": "dg-member-access"
+			}
+		]
+	}, {
+		"id": "DistributionGroupSendAsAccessTypeProvisioning",
+		"extends": ["AdObjectAccessTypePropertyBag"],
+		"properties": [{
+				"id": "GroupName",
+				"defaultValue": "$ $'GA_DG_QAACC26_{Context.ResourceSequenceId}_SendAs'"
+			}, {
+				"id": "GroupEmail",
+				"defaultValue": "$ $'ga_dg_qaacc26_{Context.ResourceSequenceId}_sendas@{Context.PrimarySmtpAddressDomainPart.Key}'"
+			},
+			{
+				"id": "DistinguishedName",
+				"defaultValue": "$ $'CN=GA_DG_QAACC26_{Context.ResourceSequenceId}_SendAs,{Services.GetProvisioningContainer(Context.Options.ProvisioningMapping.Values, 'DistributionGroupAccessTypeGroupContainer')}'"
+			},
+			{
+				"id": "AccessTypeId",
+				"defaultValue": "dg-sendas-access"
+			}
+		]
+	}
+]

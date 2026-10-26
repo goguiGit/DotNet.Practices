@@ -1,0 +1,153 @@
+[
+  {
+    "id": "StandardAdAccountData",
+    "properties": [
+      {
+        "id": "Domain",
+        "name": {
+          "": "Domain",
+          "de": "Domäne",
+          "it": "Dominio",
+          "fr": "Domaine"
+        },
+        "type": "lookup",
+        "lookup": "Lookup.AdAccountDomain",
+        "validators": {
+          "required": true
+        }
+      },
+      {
+        "id": "SamAccountName",
+        "unique": "ADAccountData",
+        "name": {
+          "": "User ID",
+          "de": "Benutzer-ID",
+          "it": "ID utente",
+          "fr": "ID d'utilisateur"
+        },
+        "type": "text",
+        "defaultValue": "$Services.GetFiveTwoOneIdValue(Context.Owner.Lastname, Context.Owner.Firstname, false, '26')",
+        "validators": {
+          "required": true,
+          "pattern": "^[^\\[\\],:;\\|=@\\+\\*\\?<>/\\\\]+$",
+          "maxlength": 20
+        }
+      },
+      {
+        "id": "DisplayName",
+        "name": {
+          "": "Catalog name",
+          "de": "Katalogname",
+          "it": "Nome del catalogo",
+          "fr": "Nom du catalogue"
+        },
+        "type": "text",
+        "valueGenerator": "$Context.SamAccountName"
+      },
+      {
+        "id": "AdGuid",
+        "name": "AD Guid",
+        "type": "uniqueIdentifier"
+      },
+      {
+        "id": "DistinguishedName",
+        "name": {
+          "":"Distinguished name",
+          "de":"Distinguierter Name",
+          "fr":"Nom distingué",
+          "it":"Nome distinto"
+        },
+        "type": "text",
+		"valueGenerator": "$ $'CN={Context.SamAccountName},{Services.GetProvisioningContainer(Context.Options.ProvisioningMapping.Values, 'StandardAdAccountContainer')}'",
+        "readOnly": true
+      },
+      {
+        "id": "IdForTargetSystem",
+        "name": {
+          "": "User ID",
+          "de": "Benutzer-ID",
+          "it": "ID utente",
+          "fr": "ID d'utilisateur"
+        },
+        "type": "text",
+        "valueGenerator": "$Services.GetIdToCheck(Context.Domain.Key,Context.SamAccountName)",
+        "readOnly": true
+      },
+      {
+        "id": "UPNOverride",
+        "name": {
+          "": "UPN override",
+          "de": "UPN überschreiben",
+          "it": "Sostituzione UPN",
+          "fr": "UPN outrepasser"
+        },
+        "type": "text",
+		"validators": {
+          "emailDomain": true
+        }
+      },
+      {
+        "id": "StartDate",
+        "name": {
+          "": "Start date",
+          "de": "Anfangsdatum",
+          "it": "Data d'inizio",
+          "fr": "Date de début"
+        },
+        "type": "date"
+      },
+      {
+        "id": "EndDate",
+        "name": {
+          "": "Expiration date",
+          "de": "Verfallsdatum",
+          "it": "Data di scadenza",
+          "fr": "Date d'expiration"
+        },
+        "type": "date",
+        "validators": {
+          "futureDate": true
+        }
+      },
+      {
+        "id": "Comments",
+        "name": {
+          "": "Comments",
+          "de": "Kommentare",
+          "it": "Commenti",
+          "fr": "Commentaires"
+        },
+        "type": "text"
+      },
+      {
+        "id": "Description",
+        "name": {
+          "": "Description",
+          "de": "Beschreibung",
+          "it": "Descrizione",
+          "fr": "Description"
+        },
+        "type": "text"
+      },
+      {
+        "id": "HomeDirectory",
+        "name": {
+          "": "Home directory",
+          "de": "Home-Verzeichnis",
+          "it": "Home directory",
+          "fr": "Répertoire personnel"
+        },
+        "type": "lookup",
+        "lookup": "Lookup.HomeDirectory",
+        "validators": {
+          "required": true
+        }
+      },
+	  {
+		"id": "HomeDirectoryInAd",
+		"type": "text",
+		"defaultValue": "$Services.Combine(Context.HomeDirectory.Key, Context.SamAccountName)"
+	  }
+    ]
+  }
+]

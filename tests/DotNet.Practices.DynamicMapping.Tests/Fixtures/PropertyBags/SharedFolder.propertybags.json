@@ -1,0 +1,130 @@
+[{
+		"id": "SharedFolderCustomInfo",
+		"properties": [{
+				"id": "ShareRoot",
+				"name": {
+					"": "Share Root"
+				},
+				"type": "lookup",
+				"lookup": "Lookup.ShareRoot",
+				"validators": {
+					"required": true
+				}
+			}, {
+				"id": "SharedFolderParent",
+				"name": {
+					"": "Parent Shared Folder",
+					"de": "Übergeordnete Ablage",
+					"fr": "Dossier partagé Parent",
+					"it": "Cartella condivisa Genitore"
+				},
+				"type": "Relation",
+				"relation": "SharedFolderParentChild"
+			}, {
+				"id": "DisplayName",
+				"name": {
+					"": "Display name",
+					"de": "Anzeigename",
+					"fr": "Nom affiché",
+					"it": "Nome visualizzato"
+				},
+				"type": "text",
+			"valueGenerator": "$(Context.SharedFolderParent == null ? Context.ShareRoot.Label : Context.SharedFolderParent.Label) + ' > ' + Context.Name",
+				"readOnly": true
+			}, {
+				"id": "Description",
+				"name": {
+					"": "Description",
+					"de": "Beschreibung",
+					"it": "Descrizione",
+					"fr": "Description"
+				},
+				"type": "text",
+				"validators": {
+					"maxlength": 255
+				}
+			}, {
+				"id": "Name",
+				"name": {
+					"": "Name",
+					"de": "Name",
+					"it": "Nome",
+					"fr": "Nom"
+				},
+				"type": "text",
+				"validators": {
+					"required": true,
+					"pattern": "^[^\\[\\],:;\\|=@\\+\\*\\?<>/\\\\]+$",
+					"maxlength": 128
+				}
+			}, {
+				"id": "Path",
+				"name": {
+					"": "Path",
+					"de": "Pfad",
+					"it": "Percorso",
+					"fr": "Chemin"
+				},
+				"readOnly": true,
+				"type": "text",
+				"valueGenerator": "$(Context.SharedFolderParent == null ? Context.ShareRoot.Key + '\\\\QAACC26\\\\' : Context.Relations?.SharedFolderParent?.Path) + '\\\\' + Context.Name"
+			}, {
+				"id": "Comments",
+				"name": {
+					"": "Comments",
+					"de": "Kommentare",
+					"it": "Commenti",
+					"fr": "Commentaires"
+				},
+				"type": "text"
+			}, {
+				"id": "ResourceSequenceId",
+				"name": {
+					"": "Resource Sequence Id"
+				},
+				"type": "text",
+				"identifyingGenerator": "$Services.GetNextIdValue('{0:00000}', 1)",
+				"unique": "SharedFolder.SequenceId",
+				"readOnly": true
+			}
+		]
+	}, {
+		"id": "SharedFolderReadAccessTypeProvisioning",
+		"extends": ["AdObjectAccessTypePropertyBag"],
+		"properties": [
+			{
+				"id": "GroupName",
+				"defaultValue": "$ $'GA_SF_QAACC26_{Context.ResourceSequenceId}_RO'"
+			},
+			{
+				"id": "DistinguishedName",
+				"defaultValue": "$ $'CN=GA_SF_QAACC26_{Context.ResourceSequenceId}_RO,{Services.GetProvisioningContainer(Context.Options.ProvisioningMapping.Values, 'SharedFolderAccessTypeGroupContainer')}'"
+			},
+			{
+				"id": "AccessTypeId",
+				"defaultValue": "sf-read-access"
+			}
+		]
+	}, {
+		"id": "SharedFolderReadWriteAccessTypeProvisioning",
+		"extends": ["AdObjectAccessTypePropertyBag"],
+		"properties": [
+			{
+				"id": "GroupName",
+				"defaultValue": "$ $'GA_SF_QAACC26_{Context.ResourceSequenceId}_RW'"
+			},
+			{
+				"id": "Domain",
+				"defaultValue": "qaacc.int"
+			},
+			{
+				"id": "SamAccountName",
+				"defaultValue": "$ $'GA_SF_QAACC26_{Context.ResourceSequenceId}_RW'"
+			},
+			{
+				"id": "AccessTypeId",
+				"defaultValue": "sf-read-write-access"
+			}
+		]
+	}
+]
