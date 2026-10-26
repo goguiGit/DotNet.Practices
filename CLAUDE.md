@@ -11,6 +11,7 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 ## Código
 - Clases, métodos y nombres de test en inglés. Comentarios en inglés y solo cuando sean imprescindibles: un comentario es un code smell por defecto (ver `.claude/rules/comments.md`).
 - Documentación para humanos (`README.md` de cada patrón) en español. Los identificadores de código citados se mantienen en inglés.
+- Toda decisión documentada (README o CLAUDE.md) lleva el **porqué**: el problema que la motivó, la alternativa descartada y qué se gana. Una decisión sin porqué no se da por documentada.
 - Nullable habilitado en todo el repo.
 - CRLF en todos los ficheros.
 
