@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- AutoMapper 14 (last MIT release) CVE-2026-32933: unbounded recursion on self-referential maps, fixed only in the commercial 15.1.1+. No map in this repo is self-referential. See src/DotNet.Practices.Abstractions/Mapping/CLAUDE.md. -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x" />
+  </ItemGroup>
+
 </Project>
