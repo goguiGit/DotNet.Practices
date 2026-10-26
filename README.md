@@ -32,8 +32,9 @@ Nothing here is a library to install. Copy what you need, together with its reas
 DotNet.Practices.slnx
 Directory.Build.props        shared TargetFramework, LangVersion, Nullable, ImplicitUsings
 Directory.Packages.props     Central Package Management (one version per package)
-.claude/rules/               coding standards, naming, comments, documentation, implementation
-.claude/agents/              researcher, implementer, test writer, tester, two reviewers, doc writer, concept explainer (see .claude/README.md)
+.claude/                     generated: rules and agents for Claude Code (see .claude/README.md)
+AGENTS.md, .cursor/, .github/ generated: the same rules and roles for Codex, Cursor and Copilot
+agent-kit/                   the single source of those rules and roles, and the .NET generator (own solution)
 src/
   DotNet.Practices.Abstractions/   pattern examples (one folder each)
   DotNet.Practices.Mediator/       MediatR usage: abstractions, caching and audit behaviors

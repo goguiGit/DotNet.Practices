@@ -22,7 +22,7 @@ Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-perso
 - `dotnet test DotNet.Practices.slnx` antes de commitear.
 
 ## Agentes (`.claude/agents/`)
-Inventario, papeles y origen en `.claude/README.md`. En corto: `researcher` (solo lectura), `implementer` (tarea cerrada con TDD), `test-writer` (solo el test en rojo), `tester` (verifica, no arregla), `dotnet-reviewer` (diff contra reglas), `dotnet-architect-reviewer` (revisión profunda; sus hallazgos se aplican con TDD en commits por tipo), `doc-writer` (README en dos partes y CLAUDE.md), `concept-explainer`. Los revisores, el investigador y el verificador no pueden escribir.
+**Generados**: `.claude/rules/*` y `.claude/agents/*` salen de `agent-kit/source/` con `dotnet run --project agent-kit/src/DotNet.Practices.AgentKit -- <repo>`; no se editan a mano (ver `agent-kit/CLAUDE.md`). Lo mismo produce `AGENTS.md`, `.cursor/rules/` y `.github/copilot-instructions.md` para otras herramientas. Inventario, papeles y origen en `.claude/README.md`. En corto: `researcher` (solo lectura), `implementer` (tarea cerrada con TDD), `test-writer` (solo el test en rojo), `tester` (verifica, no arregla), `dotnet-reviewer` (diff contra reglas), `dotnet-architect-reviewer` (revisión profunda; sus hallazgos se aplican con TDD en commits por tipo), `doc-writer` (README en dos partes y CLAUDE.md), `concept-explainer`. Los revisores, el investigador y el verificador no pueden escribir.
 
 ## Mapa de contexto
 Cargar solo lo que la tarea necesita:
@@ -31,6 +31,7 @@ Cargar solo lo que la tarea necesita:
 |---|---|
 | Escribir código C# | `.claude/rules/dotnet-standards.md`, `naming.md`, `comments.md`, `implementation.md` y el `CLAUDE.md` de la carpeta |
 | Documentar | `.claude/rules/documentation.md` y el `README.md` vecino como modelo |
+| Cambiar una regla o un agente | `agent-kit/source/` (fuente), luego regenerar; nunca `.claude/` directamente |
 | Tocar un patrón | `src/DotNet.Practices.Abstractions/<Categoría>/README.md` y el `CLAUDE.md` del patrón |
 | Mediator, DynamicMapping, ScriptedMapping | El `CLAUDE.md` y `README.md` del proyecto |
 | Tests de integración, secrets | `.claude/rules/implementation.md` (seguridad al verificar) y `src/DotNet.Practices.Abstractions/Translation/CLAUDE.md` (user-secrets) |
