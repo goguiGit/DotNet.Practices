@@ -83,6 +83,14 @@ public class DependencyGraphTests
     }
 
     [Test]
+    public void EvaluationOrder_WithCycle_DoesNotBlameDownstreamProperties()
+    {
+        var graph = DependencyGraph.Build(Bag(Text("A", "$Context.B"), Text("B", "$Context.A"), Text("C", "$Context.A")));
+
+        Assert.That(() => graph.EvaluationOrder(), Throws.TypeOf<CyclicDependencyException>().With.Property("PropertyIds").EquivalentTo(new[] { "A", "B" }));
+    }
+
+    [Test]
     public void EvaluationOrder_SelfReference_IsACycle()
     {
         Assert.That(() => DependencyGraph.Build(Bag(Text("A", "$Context.A"))).EvaluationOrder(), Throws.TypeOf<CyclicDependencyException>());

@@ -1,6 +1,6 @@
 namespace DotNet.Practices.DynamicMapping.Plans;
 
-public record MappingPlan(PlanKey Key, string CompilerVersion, IReadOnlyList<PropertyMapping> Properties)
+public sealed record MappingPlan(PlanKey Key, string CompilerVersion, IReadOnlyList<PropertyMapping> Properties)
 {
     public IReadOnlyList<PropertyMapping> Properties { get; } = WithoutDuplicates(Properties);
 

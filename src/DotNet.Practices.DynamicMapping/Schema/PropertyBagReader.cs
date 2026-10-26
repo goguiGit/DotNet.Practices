@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using DotNet.Practices.DynamicMapping.Models;
 using DotNet.Practices.DynamicMapping.Validators;
@@ -41,12 +42,10 @@ public static class PropertyBagReader
     private static PropertyBag ReadBag(JsonElement element)
     {
         var id = RequiredString(element, "id", "bag");
-        var properties = TryGet(element, "properties", out var propertiesElement)
-            ? propertiesElement.EnumerateArray().Select(property => ReadProperty(property, id)).ToList()
-            : [];
-        var extends = TryGet(element, "extends", out var extendsElement)
-            ? extendsElement.EnumerateArray().Select(baseId => baseId.GetString()!).ToList()
-            : [];
+        var properties = OptionalArray(element, "properties", id).Select(property => ReadProperty(property, id)).ToList();
+        var extends = OptionalArray(element, "extends", id)
+            .Select(baseId => baseId.ValueKind == JsonValueKind.String ? baseId.GetString()! : throw new FormatException($"Bag '{id}' extends something that is not a bag id."))
+            .ToList();
 
         return new PropertyBag(id, properties) { Extends = extends };
     }
@@ -64,7 +63,7 @@ public static class PropertyBagReader
             IdentifyingGenerator = OptionalText(element, "identifyingGenerator"),
             Unique = OptionalText(element, "unique"),
             ReadOnly = OptionalBool(element, "readOnly"),
-            Validators = ReadValidators(element),
+            Validators = ReadValidators(element, id),
         };
     }
 
@@ -81,7 +80,7 @@ public static class PropertyBagReader
             : throw new FormatException($"Property '{propertyId}' has unknown type '{typeName}'.");
     }
 
-    private static PropertyValidators ReadValidators(JsonElement element)
+    private static PropertyValidators ReadValidators(JsonElement element, string propertyId)
     {
         if (!TryGet(element, "validators", out var validators) || validators.ValueKind != JsonValueKind.Object)
         {
@@ -92,9 +91,39 @@ public static class PropertyBagReader
         {
             Required = OptionalBool(validators, "required"),
             Pattern = OptionalText(validators, "pattern"),
-            MaxLength = TryGet(validators, "maxlength", out var maxLength) && maxLength.TryGetInt32(out var length) ? length : null,
+            MaxLength = OptionalInt(validators, "maxlength", propertyId),
             FutureDate = OptionalBool(validators, "futureDate"),
         };
+    }
+
+    private static int? OptionalInt(JsonElement element, string name, string propertyId)
+    {
+        if (!TryGet(element, name, out var value))
+        {
+            return null;
+        }
+
+        // Real files write it both as a number and as a quoted number.
+        var parsed = value.ValueKind switch
+        {
+            JsonValueKind.Number when value.TryGetInt32(out var number) => number,
+            JsonValueKind.String when int.TryParse(value.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var number) => number,
+            _ => (int?)null,
+        };
+
+        return parsed ?? throw new FormatException($"Property '{propertyId}' has a non-numeric '{name}'.");
+    }
+
+    private static IEnumerable<JsonElement> OptionalArray(JsonElement element, string name, string bagId)
+    {
+        if (!TryGet(element, name, out var value))
+        {
+            return [];
+        }
+
+        return value.ValueKind == JsonValueKind.Array
+            ? value.EnumerateArray()
+            : throw new FormatException($"Bag '{bagId}' has a '{name}' that is not an array.");
     }
 
     private static string RequiredString(JsonElement element, string name, string owner) =>
@@ -118,7 +147,7 @@ public static class PropertyBagReader
     {
         foreach (var property in element.EnumerateObject())
         {
-            if (property.NameEquals(name) || string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase))
             {
                 value = property.Value;
                 return true;

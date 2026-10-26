@@ -44,7 +44,7 @@ public sealed class DependencyGraph
 
     public IReadOnlySet<string> ExternalReferencesOf(string propertyId) => _externalReferences[propertyId];
 
-    // Topological order that keeps declaration order whenever dependencies allow it.
+    // Topological order that keeps declaration order whenever dependencies allow it. Quadratic, fine for bags of tens of properties.
     public IReadOnlyList<string> EvaluationOrder()
     {
         var ordered = new List<string>(_declarationOrder.Count);
@@ -54,7 +54,7 @@ public sealed class DependencyGraph
         while (remaining.Count > 0)
         {
             var next = remaining.FirstOrDefault(id => _dependencies[id].All(emitted.Contains))
-                ?? throw new CyclicDependencyException(remaining);
+                ?? throw new CyclicDependencyException(CycleMembers(remaining));
 
             ordered.Add(next);
             emitted.Add(next);
@@ -62,5 +62,19 @@ public sealed class DependencyGraph
         }
 
         return ordered;
+    }
+
+    // Peel off properties nobody still waits for: what is left is the cycle, not the properties downstream of it.
+    private IReadOnlyCollection<string> CycleMembers(IReadOnlyCollection<string> blocked)
+    {
+        var members = blocked.ToHashSet(StringComparer.Ordinal);
+        bool removed;
+        do
+        {
+            removed = members.RemoveWhere(id => !members.Any(other => _dependencies[other].Contains(id))) > 0;
+        }
+        while (removed);
+
+        return members.Count > 0 ? blocked.Where(members.Contains).ToList() : blocked;
     }
 }

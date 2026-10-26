@@ -4,7 +4,7 @@ namespace DotNet.Practices.DynamicMapping.Models;
 
 // Display names and error messages are left out on purpose: they must not change the plan key.
 // Type is null only when the bag extends another and this property overrides one of the base.
-public record PropertyDefinition(string Id, PropertyType? Type)
+public sealed record PropertyDefinition(string Id, PropertyType? Type)
 {
     public string? Lookup { get; init; }
 

@@ -67,7 +67,6 @@ public class StandardAdAccountFixtureTests
     [Test]
     public void UPNOverride_OnlyHasValidatorsTheReaderDoesNotModelYet()
     {
-        // The file declares "emailDomain": true; until it is modelled the property reads as plain text.
         Assert.That(Bag.Property("UPNOverride"), Is.EqualTo(new PropertyDefinition("UPNOverride", PropertyType.Text)));
     }
 }

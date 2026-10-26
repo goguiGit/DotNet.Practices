@@ -1,6 +1,6 @@
 namespace DotNet.Practices.DynamicMapping.Validators;
 
-public record PropertyValidators
+public sealed record PropertyValidators
 {
     public static readonly PropertyValidators None = new();
 

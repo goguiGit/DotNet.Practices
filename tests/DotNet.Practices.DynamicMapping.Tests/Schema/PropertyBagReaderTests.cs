@@ -62,6 +62,32 @@ public class PropertyBagReaderTests
         Assert.That(PropertyBagReader.Read(json)[0].Property("A").DefaultValue, Is.EqualTo(expected));
     }
 
+    [TestCase("20")]
+    [TestCase("\"20\"")]
+    public void Read_MaxLengthAsNumberOrNumericString_IsRead(string jsonValue)
+    {
+        var json = $$"""[{ "id": "Bag", "properties": [{ "id": "A", "type": "text", "validators": { "maxlength": {{jsonValue}} } }] }]""";
+
+        Assert.That(PropertyBagReader.Read(json)[0].Property("A").Validators.MaxLength, Is.EqualTo(20));
+    }
+
+    [Test]
+    public void Read_MaxLengthThatIsNotANumber_ThrowsFormatException()
+    {
+        const string json = """[{ "id": "Bag", "properties": [{ "id": "A", "type": "text", "validators": { "maxlength": "many" } }] }]""";
+
+        Assert.That(() => PropertyBagReader.Read(json), Throws.TypeOf<FormatException>().With.Message.Contains("A"));
+    }
+
+    [TestCase("\"extends\": \"Base\"")]
+    [TestCase("\"properties\": {}")]
+    public void Read_ExtendsOrPropertiesNotAnArray_ThrowsFormatException(string fragment)
+    {
+        var json = $$"""[{ "id": "Bag", {{fragment}} }]""";
+
+        Assert.That(() => PropertyBagReader.Read(json), Throws.TypeOf<FormatException>());
+    }
+
     [Test]
     public void Read_UnknownPropertyType_ThrowsFormatExceptionNamingTheProperty()
     {

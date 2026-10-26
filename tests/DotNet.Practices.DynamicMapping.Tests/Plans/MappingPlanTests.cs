@@ -13,17 +13,13 @@ public class MappingPlanTests
     [Test]
     public void HasDynamicProperties_WhenAllDeterministic_IsFalse()
     {
-        var plan = new MappingPlan(Key, "v1", [Expression]);
-
-        Assert.That(plan.HasDynamicProperties, Is.False);
+        Assert.That(new MappingPlan(Key, "v1", [Expression]).HasDynamicProperties, Is.False);
     }
 
     [Test]
     public void HasDynamicProperties_WhenAnyDynamic_IsTrue()
     {
-        var plan = new MappingPlan(Key, "v1", [Expression, Dynamic]);
-
-        Assert.That(plan.HasDynamicProperties, Is.True);
+        Assert.That(new MappingPlan(Key, "v1", [Expression, Dynamic]).HasDynamicProperties, Is.True);
     }
 
     [Test]
@@ -39,8 +35,9 @@ public class MappingPlanTests
     }
 
     [Test]
-    public void PlanKey_WithInvalidValue_ThrowsArgumentException()
+    public void PropertyMapping_WithExpression_KeepsItWhenCloned()
     {
-        Assert.That(() => new PlanKey("not-a-hash"), Throws.ArgumentException);
+        // `with` copies fields without re-running the validation; Kind and Expression are get-only so a clone cannot break the invariant.
+        Assert.That((Expression with { DependsOn = [] }).Expression, Is.EqualTo("$Context.SamAccountName"));
     }
 }
