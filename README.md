@@ -15,7 +15,7 @@ Directory.Packages.props     Central Package Management (one version per package
 src/
   DotNet.Practices.Abstractions/   pattern examples (one folder each)
   DotNet.Practices.Mediator/       MediatR usage: abstractions, caching and audit behaviors
-  DotNet.Practices.DynamicMapping/ property-bag mapper: LLM compiles a plan once, runtime stays deterministic (in progress)
+  DotNet.Practices.DynamicMapping/ property-bag mapper: LLM compiles a plan once, runtime stays deterministic (see its README)
   DotNet.Practices.Benchmarks/     BenchmarkDotNet: hand-written mapping vs AutoMapper
 tests/
   DotNet.Practices.Abstractions.Tests/

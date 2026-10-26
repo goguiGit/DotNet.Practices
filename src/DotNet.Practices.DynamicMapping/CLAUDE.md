@@ -1,15 +1,16 @@
 # DotNet.Practices.DynamicMapping
 
-Mapper dinámico de property bags (esquemas declarativos tipo Rabbit: propiedades tipadas, lookups, validadores y expresiones `$Context.X` / `$Services.F(...)` con dependencias entre propiedades) desde una fuente externa (p. ej. una BD de RRHH). El dominio original era Active Directory, pero el problema es genérico.
+Mapper dinámico de property bags (esquemas declarativos tipo Rabbit: propiedades tipadas, lookups, validadores y expresiones `$Context.X` / `$Services.F(...)` con dependencias entre propiedades) desde una fuente externa (p. ej. una BD de RRHH). El dominio original era Active Directory, pero el problema es genérico. Explicación para humanos con diagramas en `README.md`; aquí solo decisiones.
 
 ## Carpetas
 
 - `Models/`: records del esquema (`PropertyBag`, `PropertyDefinition`, `PropertyType`, `SourceSchema`, `SourceColumn`). Solo lo que afecta al mapeo; sin nombres multiidioma ni mensajes de error.
-- `Validators/`: `PropertyValidators` y, cuando lleguen, los validadores ejecutables (`required`, `pattern`, `maxlength`, `futureDate`). Todo lo que valida un valor va aquí, no en `Models/`.
+- `Validators/`: `PropertyValidators` (declaración) y `PropertyValidator.Validate(property, value)` (ejecución: tipo, `required`, `pattern`, `maxlength`, `futureDate`; devuelve la lista de violaciones). Todo lo que valida un valor va aquí, no en `Models/`.
 - `Schema/`: `PropertyBagReader`, el lector de `propertybags.json`.
 - `Plans/`: `MappingPlan`, `PropertyMapping`, `MappingKind`, `PlanKey`.
 - `Dependencies/`: `DependencyExtractor` (saca los `Context.X` de una expresión), `DependencyGraph` (dependencias internas vs referencias externas, orden de evaluación estable, `CyclicDependencyException`).
-- Próximas: `Resolution/`, `Stores/`.
+- `Resolution/`: `MappingContext` (Owner = registro externo, Inputs = lo que teclea el solicitante, Options = contenedores y lookups), `ResolvedBag`, `Interfaces/IPropertyBagResolver` y `LlmPropertyBagResolver`, la línea base en la que el modelo evalúa todas las propiedades en una llamada.
+- Próximas: `Stores/`, el compilador de planes.
 
 ## Decisiones de diseño (no reabrir sin motivo)
 
@@ -26,6 +27,12 @@ Tolera lo que traen los ficheros reales: coma final, `readonly`/`readOnly` (clav
 - `PropertyDefinition.Type` es `null` solo en bags con `extends`: sus propiedades sobreescriben una del bag base y heredan el tipo. La resolución de `extends` es un paso posterior y el bag base (`AdObjectAccessTypePropertyBag`) **no está en la config de `qaacc`**: habrá que traerlo de otra fuente o declararlo como fixture.
 - Validadores aún no modelados y por tanto ignorados: `emailDomain`, `emailLocalValidator`, `multiEmail`, `noWhitespace`, `range`, `multiValue`.
 
+## Línea base con LLM (`LlmPropertyBagResolver`)
+
+- Prompt: system con las reglas (orden de evaluación, inputs nunca inventados, solo JSON) y user con Owner, Inputs, Options, la semántica de `Services.*` **en lenguaje natural** y las propiedades en orden de evaluación con expresión, validadores y dependencias. La semántica de `Services.*` es supuesta, no la de Rabbit.
+- Resultado observado con gpt-4o sobre los 4 fixtures: todas las propiedades válidas, pero `SamAccountName` salió `lovel-adm-26` (sin las dos letras del nombre) en un bag y `lovelada26` en otro para la misma regla. Es la evidencia de por qué el plan compilado y determinista es el camino de runtime, y esta clase solo la línea base.
+- Sin `Inputs`, las propiedades obligatorias sin expresión (`Name`, `PrimarySmtpAddressLocalPart`) quedan nulas y el test falla: correcto, no deben inventarse.
+
 ## Lo que falta (orden previsto)
 
 1. Resolución de `extends` (merge por `id`, el hijo sobreescribe).
@@ -38,4 +45,6 @@ Tolera lo que traen los ficheros reales: coma final, `readonly`/`readOnly` (clav
 - `Fixtures/PropertyBags/*.propertybags.json`: copias reales de Rabbit (`AdminAdAccount`, `StandardAdAccount`, `SharedFolder`, `DistributionGroup`), se copian al output. `PropertyBagFixtures` las lee.
 - **Una clase de tests por fixture** (`<Nombre>FixtureTests`). Cada test compara una propiedad completa con el record esperado (`Is.EqualTo(new PropertyDefinition(...) { ... })`): un assert, forma entera documentada. Si se añade un fixture, se añade su clase.
 - `PropertyBagReaderTests` solo prueba el comportamiento genérico del lector con JSON inline.
+- `PropertyBagOverviewTests`: un caso por bag que escribe en el log la tabla de propiedades, dependencias y orden; asserta que no hay ciclos.
+- `LlmPropertyBagResolverIntegrationTests` (`[Category("Integration")]`): el test general por tipo. Un caso por bag sin `extends`, resuelve todas las propiedades con el Azure OpenAI de user-secrets, escribe los valores en el log y asserta que ninguna propiedad falta ni viola sus validadores. Se ignora sin secrets. `SampleContext.AdaLovelace` es el contexto compartido.
 - Carpeta espejo del código: `Schema/`, `Plans/`, y las que vengan.
