@@ -61,13 +61,13 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Creational | Builder | [`Creational/Builder/`](src/DotNet.Practices.Patterns/Creational/Builder/README.md) | done |
 | Creational | Prototype | [`Creational/Prototype/`](src/DotNet.Practices.Patterns/Creational/Prototype/README.md) | done |
 | Creational | Singleton | [`Creational/Singleton/`](src/DotNet.Practices.Patterns/Creational/Singleton/README.md) | done |
-| Structural | Adapter | [`Structural/Adapter/`](src/DotNet.Practices.Abstractions/Structural/Adapter/README.md) | done |
-| Structural | Bridge | [`Structural/Bridge/`](src/DotNet.Practices.Abstractions/Structural/Bridge/README.md) | done |
+| Structural | Adapter | [`Structural/Adapter/`](src/DotNet.Practices.Patterns/Structural/Adapter/README.md) | done |
+| Structural | Bridge | [`Structural/Bridge/`](src/DotNet.Practices.Patterns/Structural/Bridge/README.md) | done |
 | Structural | Composite | [`Military/`](#military-composite) | done |
-| Structural | Decorator | [`Structural/Decorator/`](src/DotNet.Practices.Abstractions/Structural/Decorator/README.md) | done |
-| Structural | Facade | [`Structural/Facade/`](src/DotNet.Practices.Abstractions/Structural/Facade/README.md) | done |
-| Structural | Flyweight | [`Structural/Flyweight/`](src/DotNet.Practices.Abstractions/Structural/Flyweight/README.md) | done |
-| Structural | Proxy | [`Structural/Proxy/`](src/DotNet.Practices.Abstractions/Structural/Proxy/README.md) | done |
+| Structural | Decorator | [`Structural/Decorator/`](src/DotNet.Practices.Patterns/Structural/Decorator/README.md) | done |
+| Structural | Facade | [`Structural/Facade/`](src/DotNet.Practices.Patterns/Structural/Facade/README.md) | done |
+| Structural | Flyweight | [`Structural/Flyweight/`](src/DotNet.Practices.Patterns/Structural/Flyweight/README.md) | done |
+| Structural | Proxy | [`Structural/Proxy/`](src/DotNet.Practices.Patterns/Structural/Proxy/README.md) | done |
 | Behavioral | Chain of Responsibility | [`RequestPipeline/`](#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | done |
 | Behavioral | Command | [`Behavioral/Command/`](src/DotNet.Practices.Abstractions/Behavioral/Command/README.md) | done |
 | Behavioral | Iterator | [`Behavioral/Iterator/`](src/DotNet.Practices.Abstractions/Behavioral/Iterator/README.md) | done |
