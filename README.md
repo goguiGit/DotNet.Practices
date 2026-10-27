@@ -65,7 +65,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Structural | Bridge | [`Structural/Bridge/`](src/DotNet.Practices.Abstractions/Structural/Bridge/README.md) | done |
 | Structural | Composite | [`Military/`](#military-composite) | done |
 | Structural | Decorator | [`Structural/Decorator/`](src/DotNet.Practices.Abstractions/Structural/Decorator/README.md) | done |
-| Structural | Facade | | pending |
+| Structural | Facade | [`Structural/Facade/`](src/DotNet.Practices.Abstractions/Structural/Facade/README.md) | done |
 | Structural | Flyweight | | pending |
 | Structural | Proxy | | pending |
 | Behavioral | Chain of Responsibility | [`RequestPipeline/`](#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | done |
