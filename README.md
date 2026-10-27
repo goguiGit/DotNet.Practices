@@ -37,6 +37,7 @@ AGENTS.md, .cursor/, .github/ generated: the same rules and roles for Codex, Cur
 agent-kit/                   the single source of those rules and roles, and the .NET generator (own solution)
 src/
   DotNet.Practices.Patterns/       the 23 design patterns of the classic catalog, one folder per category (see its README)
+  DotNet.Practices.SqlErrors/      common SQL Server errors reproduced against a real database, one folder per error (see its README)
   DotNet.Practices.Abstractions/   abstraction examples: abstract classes, interfaces, a real component over IChatClient
   DotNet.Practices.Mediator/       MediatR usage: abstractions, caching and audit behaviors
   DotNet.Practices.DynamicMapping/ property-bag mapper: LLM compiles a plan once, runtime stays deterministic (see its README)
@@ -44,6 +45,7 @@ src/
   DotNet.Practices.Benchmarks/     BenchmarkDotNet: hand-written mapping vs AutoMapper
 tests/
   DotNet.Practices.Patterns.Tests/
+  DotNet.Practices.SqlErrors.Tests/
   DotNet.Practices.Abstractions.Tests/
   DotNet.Practices.Mediator.Tests/
   DotNet.Practices.DynamicMapping.Tests/
@@ -80,6 +82,10 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Behavioral | Strategy | [`Behavioral/Strategy/`](src/DotNet.Practices.Patterns/Behavioral/Strategy/README.md) | done |
 | Behavioral | Template Method | [`Behavioral/TemplateMethod/`](src/DotNet.Practices.Patterns/Behavioral/TemplateMethod/README.md) | done |
 | Behavioral | Visitor | [`Behavioral/Visitor/`](src/DotNet.Practices.Patterns/Behavioral/Visitor/README.md) | done |
+
+## Common SQL Server errors
+
+One error at a time, each reproduced against a real SQL Server in an integration test and handled the way production code should: by `SqlException.Number`, never by message text. Lives in [`src/DotNet.Practices.SqlErrors/`](src/DotNet.Practices.SqlErrors/README.md), a folder per error, same two-part docs as the pattern catalog. Tests use the local instance by default (`DOTNET_PRACTICES_SQLSERVER` overrides) and are ignored, not failed, when no server is reachable.
 
 ## Examples
 
