@@ -56,11 +56,11 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 
 | Category | Pattern | Example | Status |
 |---|---|---|---|
-| Creational | Factory Method | [`Creational/FactoryMethod/`](src/DotNet.Practices.Abstractions/Creational/FactoryMethod/README.md) | done |
-| Creational | Abstract Factory | [`Creational/AbstractFactory/`](src/DotNet.Practices.Abstractions/Creational/AbstractFactory/README.md) | done |
-| Creational | Builder | [`Creational/Builder/`](src/DotNet.Practices.Abstractions/Creational/Builder/README.md) | done |
-| Creational | Prototype | [`Creational/Prototype/`](src/DotNet.Practices.Abstractions/Creational/Prototype/README.md) | done |
-| Creational | Singleton | [`Creational/Singleton/`](src/DotNet.Practices.Abstractions/Creational/Singleton/README.md) | done |
+| Creational | Factory Method | [`Creational/FactoryMethod/`](src/DotNet.Practices.Patterns/Creational/FactoryMethod/README.md) | done |
+| Creational | Abstract Factory | [`Creational/AbstractFactory/`](src/DotNet.Practices.Patterns/Creational/AbstractFactory/README.md) | done |
+| Creational | Builder | [`Creational/Builder/`](src/DotNet.Practices.Patterns/Creational/Builder/README.md) | done |
+| Creational | Prototype | [`Creational/Prototype/`](src/DotNet.Practices.Patterns/Creational/Prototype/README.md) | done |
+| Creational | Singleton | [`Creational/Singleton/`](src/DotNet.Practices.Patterns/Creational/Singleton/README.md) | done |
 | Structural | Adapter | [`Structural/Adapter/`](src/DotNet.Practices.Abstractions/Structural/Adapter/README.md) | done |
 | Structural | Bridge | [`Structural/Bridge/`](src/DotNet.Practices.Abstractions/Structural/Bridge/README.md) | done |
 | Structural | Composite | [`Military/`](#military-composite) | done |
