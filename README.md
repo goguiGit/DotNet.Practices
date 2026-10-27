@@ -74,7 +74,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Behavioral | Mediator | [`Behavioral/Mediator/`](src/DotNet.Practices.Abstractions/Behavioral/Mediator/README.md) | done |
 | Behavioral | Memento | [`Behavioral/Memento/`](src/DotNet.Practices.Abstractions/Behavioral/Memento/README.md) | done |
 | Behavioral | Observer | [`Behavioral/Observer/`](src/DotNet.Practices.Abstractions/Behavioral/Observer/README.md) | done |
-| Behavioral | State | | pending |
+| Behavioral | State | [`Behavioral/State/`](src/DotNet.Practices.Abstractions/Behavioral/State/README.md) | done |
 | Behavioral | Strategy | [`Notifications/`](#notifications-strategy-with-per-tenant-fan-out) | done |
 | Behavioral | Template Method | | pending |
 | Behavioral | Visitor | | pending |
