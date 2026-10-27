@@ -54,7 +54,10 @@ public class ShipmentTemplateTests
         var templates = new ShipmentTemplates();
         templates.Register("weekly-palma", new SeaShipment("Valencia", "Palma", 2));
 
-        Assert.That(templates.Create("weekly-palma"), Is.Not.SameAs(templates.Create("weekly-palma")));
+        var first = templates.Create("weekly-palma");
+        var second = templates.Create("weekly-palma");
+
+        Assert.That(second, Is.Not.SameAs(first));
     }
 
     [Test]

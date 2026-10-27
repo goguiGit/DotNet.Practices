@@ -9,7 +9,10 @@ public class DispatchCenterTests
     [Test]
     public void DispatchCenter_Instance_IsAlwaysTheSameObject()
     {
-        Assert.That(DispatchCenter.Instance, Is.SameAs(DispatchCenter.Instance));
+        var first = DispatchCenter.Instance;
+        var second = DispatchCenter.Instance;
+
+        Assert.That(second, Is.SameAs(first));
     }
 
     [Test]

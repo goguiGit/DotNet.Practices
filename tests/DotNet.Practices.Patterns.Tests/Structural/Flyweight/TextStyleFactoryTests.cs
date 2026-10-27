@@ -9,7 +9,10 @@ public class TextStyleFactoryTests
     {
         var styles = new TextStyleFactory();
 
-        Assert.That(styles.Get("Arial", 12, isBold: false), Is.SameAs(styles.Get("Arial", 12, isBold: false)));
+        var first = styles.Get("Arial", 12, isBold: false);
+        var second = styles.Get("Arial", 12, isBold: false);
+
+        Assert.That(second, Is.SameAs(first));
     }
 
     [Test]
