@@ -61,7 +61,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Creational | Builder | [`Creational/Builder/`](src/DotNet.Practices.Abstractions/Creational/Builder/README.md) | done |
 | Creational | Prototype | [`Creational/Prototype/`](src/DotNet.Practices.Abstractions/Creational/Prototype/README.md) | done |
 | Creational | Singleton | [`Creational/Singleton/`](src/DotNet.Practices.Abstractions/Creational/Singleton/README.md) | done |
-| Structural | Adapter | | pending |
+| Structural | Adapter | [`Structural/Adapter/`](src/DotNet.Practices.Abstractions/Structural/Adapter/README.md) | done |
 | Structural | Bridge | | pending |
 | Structural | Composite | [`Military/`](#military-composite) | done |
 | Structural | Decorator | | pending |
