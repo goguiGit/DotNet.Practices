@@ -36,12 +36,14 @@ Directory.Packages.props     Central Package Management (one version per package
 AGENTS.md, .cursor/, .github/ generated: the same rules and roles for Codex, Cursor and Copilot
 agent-kit/                   the single source of those rules and roles, and the .NET generator (own solution)
 src/
-  DotNet.Practices.Abstractions/   pattern examples (one folder each)
+  DotNet.Practices.Patterns/       the 23 design patterns of the classic catalog, one folder per category (see its README)
+  DotNet.Practices.Abstractions/   abstraction examples: abstract classes, interfaces, a real component over IChatClient
   DotNet.Practices.Mediator/       MediatR usage: abstractions, caching and audit behaviors
   DotNet.Practices.DynamicMapping/ property-bag mapper: LLM compiles a plan once, runtime stays deterministic (see its README)
   DotNet.Practices.ScriptedMapping/ the original approach (Roslyn C# script, dynamic Context) rebuilt and tested, for comparison
   DotNet.Practices.Benchmarks/     BenchmarkDotNet: hand-written mapping vs AutoMapper
 tests/
+  DotNet.Practices.Patterns.Tests/
   DotNet.Practices.Abstractions.Tests/
   DotNet.Practices.Mediator.Tests/
   DotNet.Practices.DynamicMapping.Tests/
@@ -52,7 +54,7 @@ Conventions inside each example: interfaces in `Interfaces/`, implementations of
 
 ## Design pattern catalog
 
-One pattern at a time, following the order of the [refactoring.guru](https://refactoring.guru/es/design-patterns/csharp) catalog: creational, then structural, then behavioral. Patterns live under a folder per category (`Creational/`, `Structural/`, `Behavioral/`); each category has a `README.md` comparing its patterns, and each pattern folder has a `README.md` with the explanation and diagram plus a `CLAUDE.md` with the implementation decisions.
+One pattern at a time, following the order of the [refactoring.guru](https://refactoring.guru/es/design-patterns/csharp) catalog: creational, then structural, then behavioral. Patterns live in [`src/DotNet.Practices.Patterns/`](src/DotNet.Practices.Patterns/README.md), a folder per category (`Creational/`, `Structural/`, `Behavioral/`); each category has a `README.md` comparing its patterns, and each pattern folder has a `README.md` with the explanation and diagram plus a `CLAUDE.md` with the implementation decisions.
 
 | Category | Pattern | Example | Status |
 |---|---|---|---|
@@ -116,97 +118,15 @@ Rejected: a `CanBeCaged` flag on `Animal` (moves the error to runtime) and a `sw
 
 ### Military: Composite
 
-A chain of command as a tree. `Soldier` is both leaf and composite. `GiveOrder` propagates recursively; rank rules are enforced when adding subordinates.
-
-```mermaid
-classDiagram
-    class Soldier {
-        +Name string
-        +Rank Rank
-        +CanCommand bool
-        +Subordinates IReadOnlyList~Soldier~
-        +ReceivedOrders IReadOnlyList~Order~
-        +AddSubordinate(Soldier)
-        +GiveOrder(Order)
-    }
-    class Rank {
-        <<enumeration>>
-        Private
-        Corporal
-        Sergeant
-        Lieutenant
-        Captain
-    }
-    class Order {
-        <<enumeration>>
-        Salute
-        Shoot
-    }
-    Soldier "1" o-- "*" Soldier : subordinates
-    Soldier --> Rank
-    Soldier --> Order
-```
-
-```mermaid
-sequenceDiagram
-    participant Captain
-    participant Sergeant
-    participant Private
-    Captain->>Sergeant: Receive(Shoot)
-    Sergeant->>Sergeant: ReceivedOrders.Add
-    Sergeant->>Private: Receive(Shoot)
-    Private->>Private: ReceivedOrders.Add
-```
-
-Rejected: Chain of Responsibility (orders go down to everyone, not up until handled) and Command objects (an enum is enough).
+Moved to the catalog as [`Patterns/Structural/Composite/`](src/DotNet.Practices.Patterns/Structural/Composite/README.md): a chain of command as a tree, where `Soldier` is both leaf and composite.
 
 ### Notifications: Strategy with per-tenant fan-out
 
-Each channel is an `INotifier`. `NotificationDispatcher` receives all of them (what DI would inject as `IEnumerable<INotifier>`), indexes them by channel and sends in parallel to the channels a `Company` has enabled. Adding a channel is a new class plus an enum value; the dispatcher does not change.
-
-```mermaid
-classDiagram
-    class INotifier {
-        <<interface>>
-        +Channel NotificationChannel
-        +SendAsync(Notification, CancellationToken) Task
-    }
-    class NotificationDispatcher {
-        +SendAsync(Company, Notification, CancellationToken) Task
-    }
-    class Company {
-        +Name string
-        +Channels IReadOnlyCollection~NotificationChannel~
-    }
-    INotifier <|.. EmailNotifier
-    INotifier <|.. PushNotifier
-    NotificationDispatcher o-- INotifier : one per channel
-    NotificationDispatcher ..> Company
-```
+Moved to the catalog as [`Patterns/Behavioral/Strategy/`](src/DotNet.Practices.Patterns/Behavioral/Strategy/README.md): one `INotifier` per channel and a dispatcher that fans out to the channels each company enabled.
 
 ### RequestPipeline: Chain of Responsibility, ASP.NET middleware style
 
-`PipelineBuilder.Use(...)` is a fluent interface; `Build(terminal)` composes the middlewares in reverse so the first registered is the outermost. A middleware short-circuits by not calling `next`.
-
-```mermaid
-sequenceDiagram
-    participant C as Caller
-    participant L as LoggingMiddleware
-    participant A as AuthenticationMiddleware
-    participant T as Terminal
-    C->>L: Invoke(context)
-    L->>A: next(context)
-    alt user present
-        A->>T: next(context)
-        T-->>A: 200 OK
-    else anonymous
-        A-->>A: 401, next not called
-    end
-    A-->>L: return
-    L-->>C: trace: started / completed
-```
-
-Same shape as `IApplicationBuilder`, MediatR `IPipelineBehavior` and `HttpClient` `DelegatingHandler`.
+Moved to the catalog as [`Patterns/Behavioral/ChainOfResponsibility/`](src/DotNet.Practices.Patterns/Behavioral/ChainOfResponsibility/README.md): middlewares composed by a fluent builder, each deciding whether to call `next`.
 
 ### Translation: a real component over `IChatClient`
 

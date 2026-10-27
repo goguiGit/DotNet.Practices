@@ -3,8 +3,8 @@
 Proyecto personal de prácticas .NET. Remoto GitHub vía alias SSH `github-personal` (clave en el ssh-agent de Windows; el repo usa `core.sshCommand` apuntando al OpenSSH de Windows).
 
 ## Estructura
-- `src/` librerías y el proyecto `DotNet.Practices.Benchmarks` (BenchmarkDotNet, ejecutar en Release), `tests/` proyectos NUnit. Solución `DotNet.Practices.slnx`. Cuatro librerías: `DotNet.Practices.Abstractions` (ejemplos de patrones), `DotNet.Practices.Mediator` (uso de MediatR al estilo Woffu), `DotNet.Practices.DynamicMapping` (mapper dinámico de property bags con planes compilados por LLM) y `DotNet.Practices.ScriptedMapping` (el enfoque original con Roslyn scripting, reconstruido para comparar). Cada una con su propio `CLAUDE.md` y `README.md`.
-- Un ejemplo por carpeta (`Veterinary/`, `Military/`, `Notifications/`, `RequestPipeline/`, `Translation/`, `Mapping/`, `Creational/FactoryMethod/`...), con su `CLAUDE.md` (decisiones, para el agente) y, en los patrones del catálogo, un `README.md` (explicación y diagrama, para humanos). Los patrones del catálogo cuelgan de una carpeta por categoría (`Creational/`, `Structural/`, `Behavioral/`), cada una con un `README.md` comparativo. El README raíz solo indexa. Interfaces en `Interfaces/`, clases base abstractas en `Abstracts/`, implementaciones agrupadas por plural (`Notifiers/`, `Animals/`, `Creators/`). Tests en la carpeta espejo.
+- `src/` librerías y el proyecto `DotNet.Practices.Benchmarks` (BenchmarkDotNet, ejecutar en Release), `tests/` proyectos NUnit. Solución `DotNet.Practices.slnx`. Cinco librerías: `DotNet.Practices.Patterns` (los 23 patrones del catálogo, una carpeta por categoría), `DotNet.Practices.Abstractions` (ejemplos de abstracción: clases base, interfaces, un componente real sobre `IChatClient`), `DotNet.Practices.Mediator` (uso de MediatR al estilo Woffu), `DotNet.Practices.DynamicMapping` (mapper dinámico de property bags con planes compilados por LLM) y `DotNet.Practices.ScriptedMapping` (el enfoque original con Roslyn scripting, reconstruido para comparar). Cada una con su propio `CLAUDE.md` y `README.md`.
+- Un ejemplo por carpeta (`Veterinary/`, `Translation/`, `Mapping/` en Abstractions; `Creational/FactoryMethod/`, `Structural/Composite/`, `Behavioral/Strategy/`... en Patterns), con su `CLAUDE.md` (decisiones, para el agente) y, en los patrones del catálogo, un `README.md` (explicación y diagrama, para humanos). Los patrones del catálogo cuelgan de una carpeta por categoría (`Creational/`, `Structural/`, `Behavioral/`), cada una con un `README.md` comparativo. El README raíz solo indexa. Interfaces en `Interfaces/`, clases base abstractas en `Abstracts/`, implementaciones agrupadas por plural (`Notifiers/`, `Animals/`, `Creators/`). Tests en la carpeta espejo.
 - `Directory.Build.props`: TargetFramework, LangVersion, ImplicitUsings, Nullable. No repetirlos en los csproj.
 - `Directory.Packages.props`: Central Package Management. `PackageReference` sin `Version`; la versión va ahí.
 
@@ -32,7 +32,7 @@ Cargar solo lo que la tarea necesita:
 | Escribir código C# | `.claude/rules/dotnet-standards.md`, `naming.md`, `comments.md`, `implementation.md` y el `CLAUDE.md` de la carpeta |
 | Documentar | `.claude/rules/documentation.md` y el `README.md` vecino como modelo |
 | Cambiar una regla o un agente | `agent-kit/source/` (fuente), luego regenerar; nunca `.claude/` directamente |
-| Tocar un patrón | `src/DotNet.Practices.Abstractions/<Categoría>/README.md` y el `CLAUDE.md` del patrón |
+| Tocar un patrón | `src/DotNet.Practices.Patterns/CLAUDE.md`, `src/DotNet.Practices.Patterns/<Categoría>/README.md` y el `CLAUDE.md` del patrón |
 | Mediator, DynamicMapping, ScriptedMapping | El `CLAUDE.md` y `README.md` del proyecto |
 | Tests de integración, secrets | `.claude/rules/implementation.md` (seguridad al verificar) y `src/DotNet.Practices.Abstractions/Translation/CLAUDE.md` (user-secrets) |
 ## Git
