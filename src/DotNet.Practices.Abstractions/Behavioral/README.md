@@ -30,7 +30,7 @@ Todos resuelven la misma pregunta: **cómo repartir responsabilidades y comunica
 | [Command](Command/README.md) | Una petición debe guardarse, encolarse o deshacerse | Botón de deshacer, cola de operaciones, auditoría de acciones | hecho |
 | [Iterator](Iterator/README.md) | Recorrer una colección sin exponer su estructura | Varias formas de recorrer lo mismo (por día, por semana, solo laborables) | hecho |
 | [Mediator](Mediator/README.md) | Muchos objetos se hablan entre sí en una maraña | Cada componente conoce a todos los demás | hecho |
-| Memento | Guardar y restaurar el estado de un objeto sin romper su encapsulación | Borradores, puntos de restauración, "volver a como estaba" | pendiente |
+| [Memento](Memento/README.md) | Guardar y restaurar el estado de un objeto sin romper su encapsulación | Borradores, puntos de restauración, "volver a como estaba" | hecho |
 | Observer | Varios interesados deben enterarse de un cambio | Notificaciones en cascada tras un evento de negocio | pendiente |
 | State | El comportamiento cambia según el estado interno | `switch` sobre un enum de estado repetido en varios métodos | pendiente |
 | [Strategy](../../../README.md#notifications-strategy-with-per-tenant-fan-out) | Varias formas de hacer lo mismo, elegibles en tiempo de ejecución | `if/else` sobre "tipo de cálculo" | hecho |

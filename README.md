@@ -72,7 +72,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Behavioral | Command | [`Behavioral/Command/`](src/DotNet.Practices.Abstractions/Behavioral/Command/README.md) | done |
 | Behavioral | Iterator | [`Behavioral/Iterator/`](src/DotNet.Practices.Abstractions/Behavioral/Iterator/README.md) | done |
 | Behavioral | Mediator | [`Behavioral/Mediator/`](src/DotNet.Practices.Abstractions/Behavioral/Mediator/README.md) | done |
-| Behavioral | Memento | | pending |
+| Behavioral | Memento | [`Behavioral/Memento/`](src/DotNet.Practices.Abstractions/Behavioral/Memento/README.md) | done |
 | Behavioral | Observer | | pending |
 | Behavioral | State | | pending |
 | Behavioral | Strategy | [`Notifications/`](#notifications-strategy-with-per-tenant-fan-out) | done |
