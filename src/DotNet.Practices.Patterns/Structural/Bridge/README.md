@@ -86,7 +86,7 @@ Qué se gana: una nómina en HTML es un objeto concreto que se puede guardar y p
 
 ## Cuándo no usarlo
 
-- Solo hay un eje de variación: una interfaz y sus implementaciones bastan ([Strategy](../../../README.md#notifications-strategy-with-per-tenant-fan-out) si se elige por comportamiento).
+- Solo hay un eje de variación: una interfaz y sus implementaciones bastan ([Strategy](../../Behavioral/Strategy/README.md) si se elige por comportamiento).
 - Las "primitivas" son distintas para cada documento: entonces no hay un implementor común y forzarlo produce una interfaz enorme.
 - En .NET con DI, si la abstracción no tiene jerarquía propia (solo una clase que recibe `IDocumentFormat`), eso ya es inyección de dependencias normal; el patrón aporta cuando los dos lados tienen varias clases.
 

@@ -1,6 +1,6 @@
 # Patrones estructurales
 
-Seis de los siete ejemplos comparten un dominio, **documentos** (nóminas, informes, su generación y entrega), para que se vea cómo cada patrón coloca las piezas de forma distinta sobre los mismos tipos. Composite es anterior y vive en [`Military/`](../../../README.md#military-composite) con su propio dominio.
+Seis de los siete ejemplos comparten un dominio, **documentos** (nóminas, informes, su generación y entrega), para que se vea cómo cada patrón coloca las piezas de forma distinta sobre los mismos tipos. Composite es anterior y vive en [`Composite/`](Composite/README.md) con su propio dominio.
 
 ## Qué hace, en términos de negocio
 
@@ -25,7 +25,7 @@ Todos resuelven la misma pregunta: **cómo componer objetos y clases en estructu
 |---|---|---|---|
 | [Adapter](Adapter/README.md) | Una clase tiene la funcionalidad pero no la interfaz que el cliente espera | Integras una librería ajena y el código cliente ya existe | hecho |
 | [Bridge](Bridge/README.md) | Una jerarquía crece en dos dimensiones a la vez (tipo × plataforma) | Clases como `PdfPayslip`, `HtmlPayslip`, `PdfReport`, `HtmlReport`... | hecho |
-| [Composite](../../../README.md#military-composite) | Tratar un objeto y un grupo de objetos con la misma interfaz | Un árbol donde las operaciones se propagan a los hijos | hecho |
+| [Composite](Composite/README.md) | Tratar un objeto y un grupo de objetos con la misma interfaz | Un árbol donde las operaciones se propagan a los hijos | hecho |
 | [Decorator](Decorator/README.md) | Añadir responsabilidades a un objeto sin herencia | Combinaciones opcionales de extras (firma, marca de agua, compresión) | hecho |
 | [Facade](Facade/README.md) | Un subsistema complejo necesita una entrada simple | El cliente orquesta cinco servicios para una sola operación de negocio | hecho |
 | [Flyweight](Flyweight/README.md) | Muchos objetos comparten estado que se repite | Memoria disparada por miles de instancias con los mismos datos intrínsecos | hecho |

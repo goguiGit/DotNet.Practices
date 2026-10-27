@@ -59,7 +59,7 @@ classDiagram
 **El template method no es `virtual`.**
 Problema: si una subclase pudiera sobrescribir `Calculate`, el "esqueleto fijo" dejaría de serlo y el patrón se convertiría en herencia normal.
 Alternativa descartada: `virtual` "por si acaso".
-Qué se gana: la garantía del patrón la da el compilador. Si un convenio necesita otra estructura de cálculo, no es una subclase de esto; es otro calculador, y probablemente [Strategy](../../../README.md#notifications-strategy-with-per-tenant-fan-out).
+Qué se gana: la garantía del patrón la da el compilador. Si un convenio necesita otra estructura de cálculo, no es una subclase de esto; es otro calculador, y probablemente [Strategy](../Strategy/README.md).
 
 **Tres tipos de paso: abstracto, con valor por defecto y hook.**
 Problema: el libro distingue operaciones primitivas (obligatorias) de hooks (opcionales); con solo pasos abstractos cada subclase repite los valores comunes.
@@ -79,7 +79,7 @@ Qué se gana: las subclases solo pueden parametrizar, no reescribir; es la versi
 
 ## Cuándo no usarlo
 
-- Las variantes necesitan cambiar el orden o saltarse pasos: ya no hay esqueleto común. [Strategy](../../../README.md#notifications-strategy-with-per-tenant-fan-out) con composición da esa libertad sin herencia.
+- Las variantes necesitan cambiar el orden o saltarse pasos: ya no hay esqueleto común. [Strategy](../Strategy/README.md) con composición da esa libertad sin herencia.
 - Solo hay una variante: el esqueleto con huecos es una clase normal con constantes.
 - La jerarquía ya tiene otra razón de ser: Template Method consume la única herencia que C# permite. Si la clase ya hereda de algo, inyecta los pasos como dependencia en lugar de heredar.
 

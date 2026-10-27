@@ -99,7 +99,7 @@ Qué se gana: lo que sale es un nombre para mostrar o persistir; las decisiones 
 
 - Dos estados y una comprobación: un `bool` es más claro.
 - El comportamiento no cambia con el estado, solo un dato: un enum y ya.
-- Se confunde con [Strategy](../../../README.md#notifications-strategy-with-per-tenant-fan-out): misma estructura, pero en Strategy el cliente elige el algoritmo y los algoritmos no se conocen; aquí el estado elige el siguiente y el cliente no interviene.
+- Se confunde con [Strategy](../Strategy/README.md): misma estructura, pero en Strategy el cliente elige el algoritmo y los algoritmos no se conocen; aquí el estado elige el siguiente y el cliente no interviene.
 
 ## Tests
 

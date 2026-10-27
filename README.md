@@ -63,19 +63,19 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Creational | Singleton | [`Creational/Singleton/`](src/DotNet.Practices.Patterns/Creational/Singleton/README.md) | done |
 | Structural | Adapter | [`Structural/Adapter/`](src/DotNet.Practices.Patterns/Structural/Adapter/README.md) | done |
 | Structural | Bridge | [`Structural/Bridge/`](src/DotNet.Practices.Patterns/Structural/Bridge/README.md) | done |
-| Structural | Composite | [`Military/`](#military-composite) | done |
+| Structural | Composite | [`Structural/Composite/`](src/DotNet.Practices.Patterns/Structural/Composite/README.md) | done |
 | Structural | Decorator | [`Structural/Decorator/`](src/DotNet.Practices.Patterns/Structural/Decorator/README.md) | done |
 | Structural | Facade | [`Structural/Facade/`](src/DotNet.Practices.Patterns/Structural/Facade/README.md) | done |
 | Structural | Flyweight | [`Structural/Flyweight/`](src/DotNet.Practices.Patterns/Structural/Flyweight/README.md) | done |
 | Structural | Proxy | [`Structural/Proxy/`](src/DotNet.Practices.Patterns/Structural/Proxy/README.md) | done |
-| Behavioral | Chain of Responsibility | [`RequestPipeline/`](#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | done |
+| Behavioral | Chain of Responsibility | [`Behavioral/ChainOfResponsibility/`](src/DotNet.Practices.Patterns/Behavioral/ChainOfResponsibility/README.md) | done |
 | Behavioral | Command | [`Behavioral/Command/`](src/DotNet.Practices.Patterns/Behavioral/Command/README.md) | done |
 | Behavioral | Iterator | [`Behavioral/Iterator/`](src/DotNet.Practices.Patterns/Behavioral/Iterator/README.md) | done |
 | Behavioral | Mediator | [`Behavioral/Mediator/`](src/DotNet.Practices.Patterns/Behavioral/Mediator/README.md) | done |
 | Behavioral | Memento | [`Behavioral/Memento/`](src/DotNet.Practices.Patterns/Behavioral/Memento/README.md) | done |
 | Behavioral | Observer | [`Behavioral/Observer/`](src/DotNet.Practices.Patterns/Behavioral/Observer/README.md) | done |
 | Behavioral | State | [`Behavioral/State/`](src/DotNet.Practices.Patterns/Behavioral/State/README.md) | done |
-| Behavioral | Strategy | [`Notifications/`](#notifications-strategy-with-per-tenant-fan-out) | done |
+| Behavioral | Strategy | [`Behavioral/Strategy/`](src/DotNet.Practices.Patterns/Behavioral/Strategy/README.md) | done |
 | Behavioral | Template Method | [`Behavioral/TemplateMethod/`](src/DotNet.Practices.Patterns/Behavioral/TemplateMethod/README.md) | done |
 | Behavioral | Visitor | [`Behavioral/Visitor/`](src/DotNet.Practices.Patterns/Behavioral/Visitor/README.md) | done |
 

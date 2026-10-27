@@ -1,6 +1,6 @@
 # Patrones de comportamiento
 
-Ocho de los diez ejemplos comparten un dominio, **fichaje y ausencias** (jornadas, solicitudes de vacaciones, aprobaciones), para que se vea cómo cada patrón reparte una misma responsabilidad entre objetos de forma distinta. Chain of Responsibility y Strategy son anteriores y viven en [`RequestPipeline/`](../../../README.md#requestpipeline-chain-of-responsibility-aspnet-middleware-style) y [`Notifications/`](../../../README.md#notifications-strategy-with-per-tenant-fan-out) con dominio propio.
+Ocho de los diez ejemplos comparten un dominio, **fichaje y ausencias** (jornadas, solicitudes de vacaciones, aprobaciones), para que se vea cómo cada patrón reparte una misma responsabilidad entre objetos de forma distinta. Chain of Responsibility y Strategy son anteriores y viven en [`ChainOfResponsibility/`](ChainOfResponsibility/README.md) y [`Strategy/`](Strategy/README.md) con dominio propio.
 
 ## Qué hace, en términos de negocio
 
@@ -26,14 +26,14 @@ Todos resuelven la misma pregunta: **cómo repartir responsabilidades y comunica
 
 | Patrón | Problema que ataca | Señal de que lo necesitas | Estado |
 |---|---|---|---|
-| [Chain of Responsibility](../../../README.md#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | Varios manejadores posibles y no se sabe cuál atenderá | Middlewares, validaciones encadenadas, escalado de aprobaciones | hecho |
+| [Chain of Responsibility](ChainOfResponsibility/README.md) | Varios manejadores posibles y no se sabe cuál atenderá | Middlewares, validaciones encadenadas, escalado de aprobaciones | hecho |
 | [Command](Command/README.md) | Una petición debe guardarse, encolarse o deshacerse | Botón de deshacer, cola de operaciones, auditoría de acciones | hecho |
 | [Iterator](Iterator/README.md) | Recorrer una colección sin exponer su estructura | Varias formas de recorrer lo mismo (por día, por semana, solo laborables) | hecho |
 | [Mediator](Mediator/README.md) | Muchos objetos se hablan entre sí en una maraña | Cada componente conoce a todos los demás | hecho |
 | [Memento](Memento/README.md) | Guardar y restaurar el estado de un objeto sin romper su encapsulación | Borradores, puntos de restauración, "volver a como estaba" | hecho |
 | [Observer](Observer/README.md) | Varios interesados deben enterarse de un cambio | Notificaciones en cascada tras un evento de negocio | hecho |
 | [State](State/README.md) | El comportamiento cambia según el estado interno | `switch` sobre un enum de estado repetido en varios métodos | hecho |
-| [Strategy](../../../README.md#notifications-strategy-with-per-tenant-fan-out) | Varias formas de hacer lo mismo, elegibles en tiempo de ejecución | `if/else` sobre "tipo de cálculo" | hecho |
+| [Strategy](Strategy/README.md) | Varias formas de hacer lo mismo, elegibles en tiempo de ejecución | `if/else` sobre "tipo de cálculo" | hecho |
 | [Template Method](TemplateMethod/README.md) | Un algoritmo con pasos fijos y detalles variables | Clases casi iguales que difieren en dos o tres pasos | hecho |
 | [Visitor](Visitor/README.md) | Añadir operaciones a una jerarquía sin modificarla | Cada informe nuevo obliga a tocar todas las clases del modelo | hecho |
 
