@@ -64,7 +64,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Structural | Adapter | [`Structural/Adapter/`](src/DotNet.Practices.Abstractions/Structural/Adapter/README.md) | done |
 | Structural | Bridge | [`Structural/Bridge/`](src/DotNet.Practices.Abstractions/Structural/Bridge/README.md) | done |
 | Structural | Composite | [`Military/`](#military-composite) | done |
-| Structural | Decorator | | pending |
+| Structural | Decorator | [`Structural/Decorator/`](src/DotNet.Practices.Abstractions/Structural/Decorator/README.md) | done |
 | Structural | Facade | | pending |
 | Structural | Flyweight | | pending |
 | Structural | Proxy | | pending |

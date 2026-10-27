@@ -26,7 +26,7 @@ Todos resuelven la misma pregunta: **cómo componer objetos y clases en estructu
 | [Adapter](Adapter/README.md) | Una clase tiene la funcionalidad pero no la interfaz que el cliente espera | Integras una librería ajena y el código cliente ya existe | hecho |
 | [Bridge](Bridge/README.md) | Una jerarquía crece en dos dimensiones a la vez (tipo × plataforma) | Clases como `PdfPayslip`, `HtmlPayslip`, `PdfReport`, `HtmlReport`... | hecho |
 | [Composite](../../../README.md#military-composite) | Tratar un objeto y un grupo de objetos con la misma interfaz | Un árbol donde las operaciones se propagan a los hijos | hecho |
-| Decorator | Añadir responsabilidades a un objeto sin herencia | Combinaciones opcionales de extras (firma, marca de agua, compresión) | pendiente |
+| [Decorator](Decorator/README.md) | Añadir responsabilidades a un objeto sin herencia | Combinaciones opcionales de extras (firma, marca de agua, compresión) | hecho |
 | Facade | Un subsistema complejo necesita una entrada simple | El cliente orquesta cinco servicios para una sola operación de negocio | pendiente |
 | Flyweight | Muchos objetos comparten estado que se repite | Memoria disparada por miles de instancias con los mismos datos intrínsecos | pendiente |
 | Proxy | Controlar el acceso a un objeto: carga perezosa, caché, permisos | El objeto real es caro o remoto y no siempre hace falta | pendiente |
