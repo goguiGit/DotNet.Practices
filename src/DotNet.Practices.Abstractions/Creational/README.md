@@ -25,7 +25,7 @@ Todos resuelven la misma pregunta: **¿quién hace el `new` y cómo evitamos que
 | [Abstract Factory](AbstractFactory/README.md) | Hay que crear **familias** de objetos que deben ser compatibles entre sí | Pasas varias fábricas a la vez y hay combinaciones inválidas | hecho |
 | [Builder](Builder/README.md) | El objeto tiene muchos parámetros opcionales o se construye por pasos | Constructores con 6+ parámetros o varios constructores "telescópicos" | hecho |
 | [Prototype](Prototype/README.md) | Crear desde cero es caro o el tipo concreto no se conoce; clonar es más simple | Copias de objetos configurados, con `with` en records como caso trivial | hecho |
-| Singleton | Debe existir una sola instancia con acceso global | Casi nunca: en .NET lo resuelve el contenedor DI con `AddSingleton` | pendiente |
+| [Singleton](Singleton/README.md) | Debe existir una sola instancia con acceso global | Casi nunca: en .NET lo resuelve el contenedor DI con `AddSingleton` | hecho |
 
 ## Cómo elegir
 
