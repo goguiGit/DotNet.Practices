@@ -58,7 +58,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 |---|---|---|---|
 | Creational | Factory Method | [`Creational/FactoryMethod/`](src/DotNet.Practices.Abstractions/Creational/FactoryMethod/README.md) | done |
 | Creational | Abstract Factory | [`Creational/AbstractFactory/`](src/DotNet.Practices.Abstractions/Creational/AbstractFactory/README.md) | done |
-| Creational | Builder | | pending |
+| Creational | Builder | [`Creational/Builder/`](src/DotNet.Practices.Abstractions/Creational/Builder/README.md) | done |
 | Creational | Prototype | | pending |
 | Creational | Singleton | | pending |
 | Structural | Adapter | | pending |
