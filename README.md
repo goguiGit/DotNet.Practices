@@ -77,7 +77,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Behavioral | State | [`Behavioral/State/`](src/DotNet.Practices.Abstractions/Behavioral/State/README.md) | done |
 | Behavioral | Strategy | [`Notifications/`](#notifications-strategy-with-per-tenant-fan-out) | done |
 | Behavioral | Template Method | [`Behavioral/TemplateMethod/`](src/DotNet.Practices.Abstractions/Behavioral/TemplateMethod/README.md) | done |
-| Behavioral | Visitor | | pending |
+| Behavioral | Visitor | [`Behavioral/Visitor/`](src/DotNet.Practices.Abstractions/Behavioral/Visitor/README.md) | done |
 
 ## Examples
 
