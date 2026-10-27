@@ -28,7 +28,7 @@ Todos resuelven la misma pregunta: **cómo repartir responsabilidades y comunica
 |---|---|---|---|
 | [Chain of Responsibility](../../../README.md#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | Varios manejadores posibles y no se sabe cuál atenderá | Middlewares, validaciones encadenadas, escalado de aprobaciones | hecho |
 | [Command](Command/README.md) | Una petición debe guardarse, encolarse o deshacerse | Botón de deshacer, cola de operaciones, auditoría de acciones | hecho |
-| Iterator | Recorrer una colección sin exponer su estructura | Varias formas de recorrer lo mismo (por día, por semana, solo laborables) | pendiente |
+| [Iterator](Iterator/README.md) | Recorrer una colección sin exponer su estructura | Varias formas de recorrer lo mismo (por día, por semana, solo laborables) | hecho |
 | Mediator | Muchos objetos se hablan entre sí en una maraña | Cada componente conoce a todos los demás | pendiente |
 | Memento | Guardar y restaurar el estado de un objeto sin romper su encapsulación | Borradores, puntos de restauración, "volver a como estaba" | pendiente |
 | Observer | Varios interesados deben enterarse de un cambio | Notificaciones en cascada tras un evento de negocio | pendiente |

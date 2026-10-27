@@ -70,7 +70,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Structural | Proxy | [`Structural/Proxy/`](src/DotNet.Practices.Abstractions/Structural/Proxy/README.md) | done |
 | Behavioral | Chain of Responsibility | [`RequestPipeline/`](#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | done |
 | Behavioral | Command | [`Behavioral/Command/`](src/DotNet.Practices.Abstractions/Behavioral/Command/README.md) | done |
-| Behavioral | Iterator | | pending |
+| Behavioral | Iterator | [`Behavioral/Iterator/`](src/DotNet.Practices.Abstractions/Behavioral/Iterator/README.md) | done |
 | Behavioral | Mediator | | pending |
 | Behavioral | Memento | | pending |
 | Behavioral | Observer | | pending |
