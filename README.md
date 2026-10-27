@@ -71,7 +71,7 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Behavioral | Chain of Responsibility | [`RequestPipeline/`](#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | done |
 | Behavioral | Command | [`Behavioral/Command/`](src/DotNet.Practices.Abstractions/Behavioral/Command/README.md) | done |
 | Behavioral | Iterator | [`Behavioral/Iterator/`](src/DotNet.Practices.Abstractions/Behavioral/Iterator/README.md) | done |
-| Behavioral | Mediator | | pending |
+| Behavioral | Mediator | [`Behavioral/Mediator/`](src/DotNet.Practices.Abstractions/Behavioral/Mediator/README.md) | done |
 | Behavioral | Memento | | pending |
 | Behavioral | Observer | | pending |
 | Behavioral | State | | pending |
