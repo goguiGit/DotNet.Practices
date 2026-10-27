@@ -34,7 +34,7 @@ Todos resuelven la misma pregunta: **cómo repartir responsabilidades y comunica
 | [Observer](Observer/README.md) | Varios interesados deben enterarse de un cambio | Notificaciones en cascada tras un evento de negocio | hecho |
 | [State](State/README.md) | El comportamiento cambia según el estado interno | `switch` sobre un enum de estado repetido en varios métodos | hecho |
 | [Strategy](../../../README.md#notifications-strategy-with-per-tenant-fan-out) | Varias formas de hacer lo mismo, elegibles en tiempo de ejecución | `if/else` sobre "tipo de cálculo" | hecho |
-| Template Method | Un algoritmo con pasos fijos y detalles variables | Clases casi iguales que difieren en dos o tres pasos | pendiente |
+| [Template Method](TemplateMethod/README.md) | Un algoritmo con pasos fijos y detalles variables | Clases casi iguales que difieren en dos o tres pasos | hecho |
 | Visitor | Añadir operaciones a una jerarquía sin modificarla | Cada informe nuevo obliga a tocar todas las clases del modelo | pendiente |
 
 ## Cómo elegir
