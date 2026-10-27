@@ -29,7 +29,7 @@ Todos resuelven la misma pregunta: **cómo componer objetos y clases en estructu
 | [Decorator](Decorator/README.md) | Añadir responsabilidades a un objeto sin herencia | Combinaciones opcionales de extras (firma, marca de agua, compresión) | hecho |
 | [Facade](Facade/README.md) | Un subsistema complejo necesita una entrada simple | El cliente orquesta cinco servicios para una sola operación de negocio | hecho |
 | [Flyweight](Flyweight/README.md) | Muchos objetos comparten estado que se repite | Memoria disparada por miles de instancias con los mismos datos intrínsecos | hecho |
-| Proxy | Controlar el acceso a un objeto: carga perezosa, caché, permisos | El objeto real es caro o remoto y no siempre hace falta | pendiente |
+| [Proxy](Proxy/README.md) | Controlar el acceso a un objeto: carga perezosa, caché, permisos | El objeto real es caro o remoto y no siempre hace falta | hecho |
 
 ## Cómo elegir
 
