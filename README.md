@@ -69,15 +69,15 @@ One pattern at a time, following the order of the [refactoring.guru](https://ref
 | Structural | Flyweight | [`Structural/Flyweight/`](src/DotNet.Practices.Patterns/Structural/Flyweight/README.md) | done |
 | Structural | Proxy | [`Structural/Proxy/`](src/DotNet.Practices.Patterns/Structural/Proxy/README.md) | done |
 | Behavioral | Chain of Responsibility | [`RequestPipeline/`](#requestpipeline-chain-of-responsibility-aspnet-middleware-style) | done |
-| Behavioral | Command | [`Behavioral/Command/`](src/DotNet.Practices.Abstractions/Behavioral/Command/README.md) | done |
-| Behavioral | Iterator | [`Behavioral/Iterator/`](src/DotNet.Practices.Abstractions/Behavioral/Iterator/README.md) | done |
-| Behavioral | Mediator | [`Behavioral/Mediator/`](src/DotNet.Practices.Abstractions/Behavioral/Mediator/README.md) | done |
-| Behavioral | Memento | [`Behavioral/Memento/`](src/DotNet.Practices.Abstractions/Behavioral/Memento/README.md) | done |
-| Behavioral | Observer | [`Behavioral/Observer/`](src/DotNet.Practices.Abstractions/Behavioral/Observer/README.md) | done |
-| Behavioral | State | [`Behavioral/State/`](src/DotNet.Practices.Abstractions/Behavioral/State/README.md) | done |
+| Behavioral | Command | [`Behavioral/Command/`](src/DotNet.Practices.Patterns/Behavioral/Command/README.md) | done |
+| Behavioral | Iterator | [`Behavioral/Iterator/`](src/DotNet.Practices.Patterns/Behavioral/Iterator/README.md) | done |
+| Behavioral | Mediator | [`Behavioral/Mediator/`](src/DotNet.Practices.Patterns/Behavioral/Mediator/README.md) | done |
+| Behavioral | Memento | [`Behavioral/Memento/`](src/DotNet.Practices.Patterns/Behavioral/Memento/README.md) | done |
+| Behavioral | Observer | [`Behavioral/Observer/`](src/DotNet.Practices.Patterns/Behavioral/Observer/README.md) | done |
+| Behavioral | State | [`Behavioral/State/`](src/DotNet.Practices.Patterns/Behavioral/State/README.md) | done |
 | Behavioral | Strategy | [`Notifications/`](#notifications-strategy-with-per-tenant-fan-out) | done |
-| Behavioral | Template Method | [`Behavioral/TemplateMethod/`](src/DotNet.Practices.Abstractions/Behavioral/TemplateMethod/README.md) | done |
-| Behavioral | Visitor | [`Behavioral/Visitor/`](src/DotNet.Practices.Abstractions/Behavioral/Visitor/README.md) | done |
+| Behavioral | Template Method | [`Behavioral/TemplateMethod/`](src/DotNet.Practices.Patterns/Behavioral/TemplateMethod/README.md) | done |
+| Behavioral | Visitor | [`Behavioral/Visitor/`](src/DotNet.Practices.Patterns/Behavioral/Visitor/README.md) | done |
 
 ## Examples
 
