@@ -14,7 +14,7 @@ Este proyecto es el cuaderno de esas situaciones. Cada carpeta toma una de ellas
 | [Consulta que tarda demasiado](Timeout/README.md) | La pantalla se queda colgada | Corte limpio y aviso | hecho |
 | [Dos operaciones que se bloquean mutuamente](Deadlock/README.md) | Una de las dos falla al azar | Reintento automático, nadie se entera | hecho |
 | [Base de datos sin responder un momento](TransientFaults/README.md) | Fallo en cadena | Reintento con espera, solo para fallos pasajeros | hecho |
-| Texto del usuario colado como orden a la base | Fuga o borrado de datos | El texto se trata siempre como dato | pendiente |
+| [Texto del usuario colado como orden a la base](SqlInjection/README.md) | Fuga o borrado de datos | El texto se trata siempre como dato | hecho |
 | Una consulta por cada fila | Lento al crecer los datos | Una consulta para todo, medido | pendiente |
 
 ```mermaid
@@ -36,6 +36,7 @@ DuplicateKey/      clave única violada (2627 / 2601) tratada como resultado de 
 Timeout/           consulta bloqueada que supera CommandTimeout (-2) y cancelación del llamador
 Deadlock/          víctima de deadlock (1205) reintentada un número acotado de veces
 TransientFaults/   errores transitorios de Azure SQL (40613, 40501...) con espera exponencial, a mano y con SqlClient
+SqlInjection/      consulta parametrizada; la concatenación (fuga y error 102) solo se demuestra en el test
 ```
 
 Cada carpeta es autocontenida: su esquema SQL vive en el test que lo usa, y los tipos no se comparten entre ejemplos. Namespace igual a la ruta: `DotNet.Practices.SqlErrors.<Ejemplo>`. Tests en `tests/DotNet.Practices.SqlErrors.Tests/` replicando la carpeta.
