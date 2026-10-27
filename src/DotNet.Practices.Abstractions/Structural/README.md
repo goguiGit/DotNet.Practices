@@ -24,7 +24,7 @@ Todos resuelven la misma pregunta: **cómo componer objetos y clases en estructu
 | Patrón | Problema que ataca | Señal de que lo necesitas | Estado |
 |---|---|---|---|
 | [Adapter](Adapter/README.md) | Una clase tiene la funcionalidad pero no la interfaz que el cliente espera | Integras una librería ajena y el código cliente ya existe | hecho |
-| Bridge | Una jerarquía crece en dos dimensiones a la vez (tipo × plataforma) | Clases como `PdfPayslip`, `HtmlPayslip`, `PdfReport`, `HtmlReport`... | pendiente |
+| [Bridge](Bridge/README.md) | Una jerarquía crece en dos dimensiones a la vez (tipo × plataforma) | Clases como `PdfPayslip`, `HtmlPayslip`, `PdfReport`, `HtmlReport`... | hecho |
 | [Composite](../../../README.md#military-composite) | Tratar un objeto y un grupo de objetos con la misma interfaz | Un árbol donde las operaciones se propagan a los hijos | hecho |
 | Decorator | Añadir responsabilidades a un objeto sin herencia | Combinaciones opcionales de extras (firma, marca de agua, compresión) | pendiente |
 | Facade | Un subsistema complejo necesita una entrada simple | El cliente orquesta cinco servicios para una sola operación de negocio | pendiente |
