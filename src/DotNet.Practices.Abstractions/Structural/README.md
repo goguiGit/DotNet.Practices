@@ -28,7 +28,7 @@ Todos resuelven la misma pregunta: **cómo componer objetos y clases en estructu
 | [Composite](../../../README.md#military-composite) | Tratar un objeto y un grupo de objetos con la misma interfaz | Un árbol donde las operaciones se propagan a los hijos | hecho |
 | [Decorator](Decorator/README.md) | Añadir responsabilidades a un objeto sin herencia | Combinaciones opcionales de extras (firma, marca de agua, compresión) | hecho |
 | [Facade](Facade/README.md) | Un subsistema complejo necesita una entrada simple | El cliente orquesta cinco servicios para una sola operación de negocio | hecho |
-| Flyweight | Muchos objetos comparten estado que se repite | Memoria disparada por miles de instancias con los mismos datos intrínsecos | pendiente |
+| [Flyweight](Flyweight/README.md) | Muchos objetos comparten estado que se repite | Memoria disparada por miles de instancias con los mismos datos intrínsecos | hecho |
 | Proxy | Controlar el acceso a un objeto: carga perezosa, caché, permisos | El objeto real es caro o remoto y no siempre hace falta | pendiente |
 
 ## Cómo elegir
