@@ -29,11 +29,13 @@
     <Project Path="src/DotNet.Practices.DynamicMapping/DotNet.Practices.DynamicMapping.csproj" />
     <Project Path="src/DotNet.Practices.Benchmarks/DotNet.Practices.Benchmarks.csproj" />
     <Project Path="src/DotNet.Practices.Mediator/DotNet.Practices.Mediator.csproj" />
+    <Project Path="src/DotNet.Practices.Patterns/DotNet.Practices.Patterns.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/DotNet.Practices.ScriptedMapping.Tests/DotNet.Practices.ScriptedMapping.Tests.csproj" />
     <Project Path="tests/DotNet.Practices.DynamicMapping.Tests/DotNet.Practices.DynamicMapping.Tests.csproj" />
     <Project Path="tests/DotNet.Practices.Mediator.Tests/DotNet.Practices.Mediator.Tests.csproj" />
+    <Project Path="tests/DotNet.Practices.Patterns.Tests/DotNet.Practices.Patterns.Tests.csproj" />
   </Folder>
   <Project Path="src/DotNet.Practices.Abstractions/DotNet.Practices.Abstractions.csproj" Id="271204a2-8820-41f2-b71e-1b65556e9872" />
   <Project Path="tests/DotNet.Practices.Abstractions.Tests/DotNet.Practices.Abstractions.Tests.csproj" Id="6fd2dd41-22df-4c19-95bd-aa9ecd8b9c9b" />
